@@ -27,7 +27,8 @@ setup(
         'anticaptcha',
         'scraping',
         'scrape',
-        'challenge'
+        'challenge',
+        "sneakers"
     ],
     include_package_data = True,
     install_requires = [

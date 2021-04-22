@@ -1,5 +1,5 @@
 # Captcha Tools
-Python module to help solve captchas with Capmonster, 2captcha and Anticaptcha API's!
+Python module to help solve captchas with Capmonster, 2Captcha and Anticaptcha API's!
 
 # Install
 ```python

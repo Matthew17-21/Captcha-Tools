@@ -19,7 +19,7 @@ class Twocap:
     def get_id(self) -> int:
         payload = {
             "key": self.user_data.api_key,
-            "method": "userrecaptcha",
+            "method": "userrecaptcha", # Because V2 recaptcha is defaulted on init, I'll leave this
             "googlekey": self.user_data.sitekey,
             "pageurl":self.user_data.captcha_url,
             "json": 1
@@ -33,6 +33,13 @@ class Twocap:
             payload["version"] = "v3"
             payload["action"] = self.user_data.action
             payload["min_score"] = self.user_data.min_score
+        
+        elif self.user_data.captcha_type == "hcap" or self.user_data.captcha_type == "hcaptcha":
+            payload["method"] = "hcaptcha"
+            # We need to remove the "googlekey" ket from the payload
+            # And replace it with "sitekey"
+            payload.pop("googlekey")
+            payload["sitekey"] = self.user_data.sitekey
 
         while True:
             try:

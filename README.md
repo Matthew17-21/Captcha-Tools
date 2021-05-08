@@ -5,6 +5,10 @@ Python module to help solve captchas with Capmonster, 2Captcha and Anticaptcha A
 ```python
 pip3 install captchatools
 ```
+##### To update
+```python
+pip3 install -U captchatools
+```
 
 # How to use
 ```python
@@ -23,12 +27,12 @@ captcha_answer = solver.get_token()
 | :-------------: |:-------------:| :-----:| :-----:| :-----:|
 | api_key | true | String| -| The API Key for the captcha solving site|
 | solving_site| true| String (name of site) or int (site ID) | "capmonster"| Captcha solving site|
-| sitekey| true | String | - | Google sitekey from the site where captcha is loaded|
+| sitekey| true | String | - | Sitekey from the site where captcha is loaded|
 | captcha_url | true| String | - | URL where the captcha is located|
-| captcha_type| false| String | "v2" | Either captcha v2 or v3|
-| invisible_captcha| false | bool | false | If the captcha is invisible or not|
-| min_score | false | double |0.7 | Minimum score for v3 captchas|
-| action | false | String | "verify" | Action that is associated with the v3 captcha|
+| captcha_type| false| String | "v2" | Type of captcha you are solving. Either captcha `v2`, `v3` or `hcaptcha` (`hcap` works aswell)|
+| invisible_captcha| false | bool | false | If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
+| min_score | false | double |0.7 | Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
+| action | false | String | "verify" | Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
 
 
 # Supported Sites
@@ -37,11 +41,11 @@ captcha_answer = solver.get_token()
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 
 ##### Site-Specific Support:
-| Site            |Site ID| Captcha Types           |  Task Types  |
+| Site            |Site ID| Captcha Types  Supported    |  Task Types Supported|
 | :-------------: |:-------------:|:-------------:| :-----:|
-| Capmonster      |1| Recaptcha V2, Recaptcha V3 | RecaptchaV2TaskProxyless, RecaptchaV3TaskProxyless |
-| Anticaptcha     |2| Recaptcha V2, Recaptcha V3      |    RecaptchaV2TaskProxyless, RecaptchaV3TaskProxyless |
-| 2Captcha        |3| Recaptcha V2, Recaptcha V3      |   - |
+| Capmonster      |1| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
+| Anticaptcha     |2| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
+| 2Captcha        |3| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
 
 
 # Recommendations
@@ -54,7 +58,8 @@ captcha_answer = solver.get_token()
 | :--------:| :-----:|
 | `NoBalanceException` | Balance is below 0 for captcha solving site|
 | `WrongAPIKeyExceptionException` | Incorrect API Key for captcha solving site|
-| `WrongSitekeyException` | Incorrect Google sitekey |
+| `WrongSitekeyException` | Incorrect sitekey |
+| `NoHarvesterException` | When the user did not / incorrectly chose a captcha harvester. Refer to the [guide](https://github.com/Matthew17-21/Captcha-Tools#how-to-use) |
 
 ```python
 from captchatools import captcha_harvesters, exceptions as captchaExceptions
@@ -63,6 +68,15 @@ try:
 except captchaExceptions.NoBalanceException:
     print("No balance.")
 ```
+or
+```python
+import captchatools
+try:
+    ...
+except captchatools.NoBalanceException:
+    print("No balance.")
+```
+
 
 # TO DO
 1. [] Document code better
@@ -85,4 +99,5 @@ except captchaExceptions.NoBalanceException:
     * [] User Agent Support
     * [] Different type of captchas
 5. [] Add DeathByCaptcha
-6. [] More defined exceptions
+6. [] Release in Go
+7. [] Allow for refunds

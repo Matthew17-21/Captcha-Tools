@@ -1,6 +1,7 @@
 from .twocap import Twocap
 from .anticaptcha import Anticap
 from .capmonster import Capmonster
+from .exceptions import NoHarvesterException
 
 class captcha_harvesters:
     def __init__(   self, solving_site=1, 
@@ -29,6 +30,12 @@ class captcha_harvesters:
         #Get Token from 2captcha API
         elif self.solving_site == 3 or str(self.solving_site).lower() == "2captcha":
             self.harvester = Twocap(self)
+        else:
+            raise NoHarvesterException(
+                "No captcha harvester was selected. Double check you entered the site name correctly "
+                +
+                "|| Double check the site id is type int"
+            )
     
     def get_token(self):
         '''

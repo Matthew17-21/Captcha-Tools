@@ -2,7 +2,7 @@ import requests
 from . import exceptions as captchaExceptions
 import time
 
-BASEURL = " https://api.capmonster.cloud"
+BASEURL = "https://api.capmonster.cloud"
 
 
 # There's others way we could've done this, 
@@ -41,6 +41,8 @@ class Capmonster:
             payload["task"]["type"] = "RecaptchaV3TaskProxyless"
             payload["task"]["minScore"] = self.user_data.min_score
             payload["task"]["pageAction"] = self.user_data.action
+        elif self.user_data.captcha_type == "hcap" or self.user_data.captcha_type == "hcaptcha":
+            payload["task"]["type"] = "HCaptchaTaskProxyless"
 
         # Get the Queue ID b sending a POST request to their API
         while True:
@@ -67,7 +69,6 @@ class Capmonster:
                 raise captchaExceptions.WrongSitekeyException()
             except captchaExceptions.WrongAPIKeyException:
                 raise captchaExceptions.WrongAPIKeyException()
-
             except Exception:
                 pass
 

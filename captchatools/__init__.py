@@ -1,15 +1,14 @@
 '''
-Library for solving captchas!
-~~~~~~~~~~~~~~~~~~~~~
+All-in-one library for solving captchas!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 How to use:
->>> import captcha_harvesters
->>> solver = captcha_harvesters.captcha_harvesters()
+>>> import captchatools
+>>> solver = captchatools.captcha_harvesters(solving_site="capmonster", api_key="YOUR API KEY", sitekey="SITEKEY", captcha_url="https://www.google.com/recaptcha/api2/demo")
 >>> captcha_answer = solver.get_token()
 or
-
->>> from captcha_harvesters import captcha_harvesters, exceptions
->>> solver = captcha_harvesters()
+>>> from captchatools import captcha_harvesters, exceptions
+>>> solver = captcha_harvesters(solving_site=1, api_key="YOUR API KEY", sitekey="SITEKEY", captcha_url="https://www.google.com/recaptcha/api2/demo")
 >>> captcha_answer = solver.get_token()
 
 Sites:
@@ -18,4 +17,6 @@ Sites:
 3 = 2captcha
 '''
 from .harvesters import captcha_harvesters
-from . import exceptions
+from .exceptions import(
+    WrongAPIKeyException, NoBalanceException, WrongSitekeyException, NoHarvesterException
+)

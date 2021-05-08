@@ -41,6 +41,9 @@ class Anticap:
             payload["task"]["type"] = "RecaptchaV3TaskProxyless"
             payload["task"]["minScore"] = self.user_data.min_score
             payload["task"]["pageAction"] = self.user_data.action
+        
+        elif self.user_data.captcha_type == "hcap" or self.user_data.captcha_type == "hcaptcha":
+            payload["task"]["type"] = "HCaptchaTaskProxyless"
 
         # Get the Queue ID b sending a POST request to their API
         while True:
@@ -58,14 +61,12 @@ class Anticap:
                 elif resp["errorCode"] == "ERROR_KEY_DOES_NOT_EXIST":
                     # Throw Exception
                     raise captchaExceptions.WrongAPIKeyException()
-
             except captchaExceptions.NoBalanceException:
                 raise captchaExceptions.NoBalanceException()
             except captchaExceptions.WrongSitekeyException:
                 raise captchaExceptions.WrongSitekeyException()
             except captchaExceptions.WrongAPIKeyException:
                 raise captchaExceptions.WrongAPIKeyException()
-
             except Exception:
                 pass
 

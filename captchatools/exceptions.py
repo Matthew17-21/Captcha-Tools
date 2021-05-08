@@ -3,21 +3,28 @@ class WrongAPIKeyException(Exception):
     '''
     This exception gets thrown when the user provides a wrong API Key
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self, message="[captchatools] Incorrect API key for the captcha solving site"):
+        super(WrongAPIKeyException, self).__init__(message)
         
 
 class NoBalanceException(Exception):
     '''
     This exception gets thrown when there is no more funds available for the provider
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self, message="[captchatools] No balance available"):
+        super(NoBalanceException, self).__init__(message)
 
 
 class WrongSitekeyException(Exception):
     '''
     This exception gets thrown when the user provides a wrong google sitekey
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self, message="[captchatools] Incorrect google sitekey"):
+        super(WrongSitekeyException, self).__init__(message)
+
+class NoHarvesterException(Exception):
+    '''
+    This exception gets thrown when a user doesn't properly set a harvester.
+    '''
+    def __init__(self, message="[captchatools] No captcha harvester selected"):
+        super(NoHarvesterException, self).__init__(message)

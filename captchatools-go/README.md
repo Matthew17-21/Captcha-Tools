@@ -55,7 +55,7 @@ func v3Example() {
 ### captchatools.NewHarvester() Parameters:
 | Parameter | Required |  Type  | Default | Description|
 | :-------------: |:-------------:| :-----:| :-----:| :-----:|
-| solving_site | true | int| -| The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
+| solving_site | true | int| -| The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
 | Config| true | captchatools.Config | - | Configurations for the captchas you are solving. |
 
 
@@ -96,8 +96,8 @@ func v3Example() {
 | `ErrNoBalance` | Balance is below 0 for captcha solving site|
 | `ErrWrongAPIKey` | Incorrect API Key for captcha solving site|
 | `ErrWrongSitekey` | Incorrect sitekey |
-| `ErrIncorrectCapType` | Incorrectly chose a captcha type. When initializing a new harvester. Refer to [the captcha types](https://github.com/Matthew17-21/Captcha-Tools/captchatools-go#how-to-use) |
-| `ErrNoHarvester` | When the user did not / incorrectly chose a captcha harvester. Refer to the [guide](https://github.com/Matthew17-21/Captcha-Tools/captchatools-go#how-to-use) |
+| `ErrIncorrectCapType` | Incorrectly chose a captcha type. When initializing a new harvester. Refer to [the captcha types](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#config-struct-fields) |
+| `ErrNoHarvester` | When the user did not / incorrectly chose a captcha harvester. Refer to the ["how to use" guide](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#how-to-use) |
 
 ```go
 package main

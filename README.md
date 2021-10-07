@@ -1,6 +1,9 @@
 # Captcha Tools
 Python module to help solve captchas with Capmonster, 2Captcha and Anticaptcha API's!
 
+#### Go(lang)
+To see documentation for the Go implementation, [click here](https://github.com/Matthew17-21/Captcha-Tools/captchatools-go)
+
 # Install
 ```python
 pip3 install captchatools

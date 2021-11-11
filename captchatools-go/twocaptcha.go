@@ -99,6 +99,9 @@ func (t *Twocaptcha) createPayload() (string, error) {
 	}
 
 	// Add any other keys to the payload
+	if t.config.SoftID != 0 {
+		payload.SoftID = t.config.SoftID
+	}
 	switch t.config.CaptchaType {
 	case "v2":
 		payload.Googlekey = t.config.Sitekey

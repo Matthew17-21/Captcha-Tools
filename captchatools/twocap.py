@@ -24,7 +24,8 @@ class Twocap:
             "pageurl":self.user_data.captcha_url,
             "json": 1
         }
-
+        if self.user_data.soft_id is not None:
+            payload["soft_id"] = self.user_data.soft_id
         if self.user_data.captcha_type == "v2":
             if self.user_data.invisible_captcha:
                 payload["invisible"] = 1

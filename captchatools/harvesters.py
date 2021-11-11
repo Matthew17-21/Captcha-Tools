@@ -9,7 +9,7 @@ class captcha_harvesters:
                     captcha_type="v2", invisible_captcha=False, 
                     sitekey="Sitekey of the page where the captcha is loaded",
                     captcha_url="The site URL of where the captcha is loaded", 
-                    action="verify", min_score=0.7):
+                    action="verify", min_score=0.7, soft_id=4782723):
         self.api_key = api_key
         self.solving_site = solving_site
         self.captcha_type = captcha_type.lower()
@@ -18,6 +18,7 @@ class captcha_harvesters:
         self.min_score = min_score
         self.sitekey = sitekey
         self.action = action
+        self.soft_id = soft_id
 
         # Get Token from Capmonster API
         if self.solving_site == 1 or str(self.solving_site).lower() == "capmonster":

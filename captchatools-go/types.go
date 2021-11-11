@@ -28,6 +28,7 @@ type (
 		Action             string  // Action that is associated with the V3 captcha.
 		IsInvisibleCaptcha bool    // If the captcha is invisible or not.
 		MinScore           float32 // Minimum score for v3 captchas.
+		SoftID             int     // SoftID for 2captcha. Developers get reward 10% of spendings of their software users.
 	}
 
 	/*
@@ -111,6 +112,7 @@ type (
 		Version   string  `json:"version,omitempty"`
 		Action    string  `json:"action,omitempty"`
 		MinScore  float32 `json:"min_score,omitempty"`
+		SoftID    int     `json:"soft_id,omitempty"`
 	}
 	twocaptchaResponse struct {
 		Status  int    `json:"status"`

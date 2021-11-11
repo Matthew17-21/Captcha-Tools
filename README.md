@@ -16,13 +16,13 @@ pip3 install -U captchatools
 # How to use
 ```python
 import captchatools
-solver = captchatools.captcha_harvesters(solving_site="capmonster", api_key="YOUR API KEY", sitekey="SITEKEY", captcha_url="https://www.google.com/recaptcha/api2/demo")
+solver = captchatools.captcha_harvesters(solving_site="capmonster", api_key="YOUR API KEY", sitekey="6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", captcha_url="https://www.google.com/recaptcha/api2/demo")
 captcha_answer = solver.get_token()
 ```
 or
 ```python
 from captchatools import captcha_harvesters, exceptions
-solver = captcha_harvesters(solving_site=1, api_key="YOUR API KEY", sitekey="SITEKEY", captcha_url="https://www.google.com/recaptcha/api2/demo")
+solver = captcha_harvesters(solving_site=1, api_key="YOUR API KEY", sitekey="6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", captcha_url="https://www.google.com/recaptcha/api2/demo")
 captcha_answer = solver.get_token()
 ```
 
@@ -36,7 +36,7 @@ captcha_answer = solver.get_token()
 | invisible_captcha| false | bool | false | If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
 | min_score | false | double |0.7 | Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
 | action | false | String | "verify" | Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
-
+| soft_id | false | int | 4782723 |2captcha Developer ID. <br /> Developers get 10% of spendings of their software users. |
 
 # Supported Sites
 - **[Capmonster](https://capmonster.cloud/)**

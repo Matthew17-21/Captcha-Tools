@@ -30,7 +30,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(solver.GetToken())
+	capToken, err := solver.GetToken()
+	fmt.Println(capToken)
 }
 
 ```
@@ -48,27 +49,29 @@ func v3Example() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(solver.GetToken())
+	capToken, err := solver.GetToken()
+	fmt.Println(capToken)
 }
 
 ```
 ### captchatools.NewHarvester() Parameters:
-| Parameter | Required |  Type  | Default | Description|
-| :-------------: |:-------------:| :-----:| :-----:| :-----:|
-| solving_site | true | int| -| The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
-| Config| true | captchatools.Config | - | Configurations for the captchas you are solving. |
+| Parameter | Required |  Type  |  Description|
+| :-------------: |:-------------:| :-----:| :-----:|
+| solving_site | true | int|  The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
+| Config| true | captchatools.Config |  Configurations for the captchas you are solving. |
 
 
 ### Config struct fields:
-| Field | Required |  Type  | Default | Description|
-| :-------------: |:-------------:| :-----:| :-----:| :-----:|
-| Api_key | true | String| -| The API Key for the captcha solving site|
-| Sitekey| true | String | - | Sitekey from the site where captcha is loaded|
-| CaptchaURL | true| String | - | URL where the captcha is located|
-| CaptchaType| true| String | - | Type of captcha you are solving. Either captcha `v2`, `v3` or `hcaptcha` (`hcap` works aswell)|
-| Action | false | String | - | Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
-| IsInvisibleCaptcha| false | bool | - | If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
-| MinScore | false | float32 | - | Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
+| Field | Required |  Type  |  Description|
+| :-------------: |:-------------:|  :-----:| :-----:|
+| Api_key | true | String|  The API Key for the captcha solving site|
+| Sitekey| true | String | Sitekey from the site where captcha is loaded|
+| CaptchaURL | true| String |  URL where the captcha is located|
+| CaptchaType| true| String |  Type of captcha you are solving. Either captcha `v2`, `v3` or `hcaptcha` (`hcap` works aswell)|
+| Action | false | String |  Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
+| IsInvisibleCaptcha| false | bool |  If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
+| MinScore | false | float32 |  Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
+| SoftID | false | int |  2captcha Developer ID. <br /> Developers get 10% of spendings of their software users. |
 
 <!-- | solving_site| true| String (name of site) or int (site ID) | "capmonster"| Captcha solving site| -->
 
@@ -122,7 +125,8 @@ func main() {
 			panic(err)
 		}
 	}
-	fmt.Println(solver.GetToken())
+	capToken, err := solver.GetToken()
+	fmt.Println(capToken)
 }
 
 ```

@@ -1,8 +1,9 @@
 from .twocap import Twocap
 from .anticaptcha import Anticap
 from .capmonster import Capmonster
-from .exceptions import NoHarvesterException
-
+from .exceptions import NoHarvesterException, FailedToGetCapIMG
+import requests
+import base64
 class captcha_harvesters:
     def __init__(   self, solving_site=1, 
                     api_key="Key the site gave you to solve captchas", 
@@ -40,6 +41,37 @@ class captcha_harvesters:
     
     def get_token(self):
         '''
-        Returns a captcha token for the provided details
+        Returns a recaptcha token for the provided details
         '''
         return self.harvester.get_token()
+    
+    def get_normal(self, path_to_image):
+        '''
+        This method will handle returning text from 'Normal Captchas.' 
+        
+        As per 2captcha, 
+        "Normal Captcha is an image that contains distored but human-readable text. To solve the captcha user have to type the text from the image."
+
+
+        Parameters:
+        - path_to_image
+            - The path where the captcha is located (you must download the image yourself and then pass it in)
+        '''
+        return self.harvester.get_normal(path_to_image)
+    
+    @staticmethod
+    def get_cap_img(img_url:str) -> str:
+        '''
+        This function tries 3 times to get the captcha image.
+        
+        If successful, it returns the base64 encoded image.
+        If not successful, raises a FailedToGetCapIMG exception
+        '''
+        for _ in range(3):
+            try:
+                response = requests.get(img_url)
+                b64response = base64.b64encode(response.content).decode("utf-8")
+                return b64response
+            except:
+                pass
+        raise FailedToGetCapIMG()

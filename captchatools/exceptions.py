@@ -1,4 +1,4 @@
-
+import requests.exceptions
 class WrongAPIKeyException(Exception):
     '''
     This exception gets thrown when the user provides a wrong API Key
@@ -28,3 +28,17 @@ class NoHarvesterException(Exception):
     '''
     def __init__(self, message="[captchatools] No captcha harvester selected"):
         super(NoHarvesterException, self).__init__(message)
+
+class CaptchaIMGTooBig(Exception):
+    '''
+    This exception gets thrown when the filesize of the captcha image is too big for the solving site.
+    '''
+    def __init__(self, message="[captchatools] Size of the captcha image is too big."):
+        super(CaptchaIMGTooBig, self).__init__(message)
+
+class FailedToGetCapIMG(Exception):
+    '''
+    This exception gets thrown when the program fails to get the captcha image after 3 tries
+    '''
+    def __init__(self, message="[captchatools] Failed to fetch captcha image."):
+        super(FailedToGetCapIMG, self).__init__(message)

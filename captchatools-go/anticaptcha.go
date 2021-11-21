@@ -3,7 +3,6 @@ package captchatoolsgo
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -72,7 +71,6 @@ func (t *Anticaptcha) getCaptchaAnswer() (string, error) {
 		// Parse Response
 		body, _ := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
-		fmt.Println(string(body))
 		json.Unmarshal(body, response)
 		if response.Status == "ready" {
 			return response.Solution.GRecaptchaResponse, nil

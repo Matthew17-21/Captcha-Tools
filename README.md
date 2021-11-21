@@ -12,8 +12,8 @@ pip3 install captchatools
 ```python
 pip3 install -U captchatools
 ```
-
 # How to use
+### Getting reCAPTCHA Tokens
 ```python
 import captchatools
 solver = captchatools.captcha_harvesters(solving_site="capmonster", api_key="YOUR API KEY", sitekey="6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", captcha_url="https://www.google.com/recaptcha/api2/demo")
@@ -24,6 +24,14 @@ or
 from captchatools import captcha_harvesters, exceptions
 solver = captcha_harvesters(solving_site=1, api_key="YOUR API KEY", sitekey="6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", captcha_url="https://www.google.com/recaptcha/api2/demo")
 captcha_answer = solver.get_token()
+```
+
+### Getting Normal Captcha Tokens
+```python
+import captchatools
+solver = captchatools.captcha_harvesters(solving_site=2, captcha_type="normal", api_key="YOUR API KEY HERE")
+url = "https://www.scienceabc.com/wp-content/uploads/ext-www.scienceabc.com/wp-content/uploads/2016/07/Captcha-ex.jpg-.jpg"
+text_cap_answer = solver.get_normal(url)
 ```
 
 | Parameter | Required |  Type  | Default | Description|
@@ -46,8 +54,8 @@ captcha_answer = solver.get_token()
 ##### Site-Specific Support:
 | Site            |Site ID| Captcha Types  Supported    |  Task Types Supported|
 | :-------------: |:-------------:|:-------------:| :-----:|
-| Capmonster      |1| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
-| Anticaptcha     |2| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
+| Capmonster      |1| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless, <br />ImageToTextTask<br />|
+| Anticaptcha     |2| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless <br />ImageToTextTask<br />|
 | 2Captcha        |3| Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
 
 
@@ -63,6 +71,8 @@ captcha_answer = solver.get_token()
 | `WrongAPIKeyExceptionException` | Incorrect API Key for captcha solving site|
 | `WrongSitekeyException` | Incorrect sitekey |
 | `NoHarvesterException` | When the user did not / incorrectly chose a captcha harvester. Refer to the [guide](https://github.com/Matthew17-21/Captcha-Tools#how-to-use) |
+| `CaptchaIMGTooBig` | The size of the captcha image is too big for the solving service. |
+| `FailedToGetCapIMG`| Failed to get the captcha image from the URL. <br />**Tries 3 times before getting thrown.**<br />
 
 ```python
 from captchatools import captcha_harvesters, exceptions as captchaExceptions

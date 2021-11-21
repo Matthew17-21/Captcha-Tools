@@ -16,8 +16,11 @@ class Capmonster:
 
     def get_token(self) -> str:        
         return self.get_answer( self.get_id()  )
+    
+    def get_normal(self, path_to_img) -> str:
+        return self.get_answer(self.get_id(path_to_img), True)
 
-    def get_id(self) -> int:
+    def get_id(self, cap_pic_url=None) -> int:
         '''
         Method to get Queue ID from the API.
         '''
@@ -43,6 +46,11 @@ class Capmonster:
             payload["task"]["pageAction"] = self.user_data.action
         elif self.user_data.captcha_type == "hcap" or self.user_data.captcha_type == "hcaptcha":
             payload["task"]["type"] = "HCaptchaTaskProxyless"
+        
+        elif self.user_data.captcha_type == "normal":
+            payload["task"]["type"] = "ImageToTextTask"
+            payload["task"]["body"] = self.user_data.get_cap_img(cap_pic_url)
+
 
         # Get the Queue ID b sending a POST request to their API
         while True:
@@ -62,30 +70,27 @@ class Capmonster:
                 elif resp["errorCode"] == "ERROR_KEY_DOES_NOT_EXIST":
                     # Throw Exception
                     raise captchaExceptions.WrongAPIKeyException()
-
-            except captchaExceptions.NoBalanceException:
-                raise captchaExceptions.NoBalanceException()
-            except captchaExceptions.WrongSitekeyException:
-                raise captchaExceptions.WrongSitekeyException()
-            except captchaExceptions.WrongAPIKeyException:
-                raise captchaExceptions.WrongAPIKeyException()
-            except Exception:
+                
+                elif resp["errorCode"] == "ERROR_TOO_BIG_CAPTCHA_FILESIZE":
+                    raise captchaExceptions.CaptchaIMGTooBig()
+            except requests.RequestException:
                 pass
 
-    def get_answer(self, queue_id) -> str:
+    def get_answer(self, queue_id, isTextCap=False) -> str:
         '''
         This method gets the captcha token from the API
         '''
+        payload_getAnswer = {
+            "clientKey":self.user_data.api_key,
+            "taskId": queue_id
+        }
         while True:
             try:
-                payload_getAnswer = {
-                    "clientKey":self.user_data.api_key,
-                    "taskId": queue_id
-                }
-            
                 answer = requests.post(BASEURL + "/getTaskResult", json=payload_getAnswer).json()
-                if answer["status"] == "ready":
+                if answer["status"] == "ready" and not isTextCap:
                     return answer["solution"]["gRecaptchaResponse"]
+                elif answer["status"] == "ready" and isTextCap:
+                    return answer["solution"]["text"]
                 
                 elif answer["errorId"] == 12 or answer["errorId"] == 16:
                     # Captcha unsolvable || TaskID doesn't exist

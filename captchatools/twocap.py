@@ -16,7 +16,10 @@ class Twocap:
     def get_token(self) -> str:        
         return self.get_answer( self.get_id()  )
 
-    def get_id(self) -> int:
+    def get_normal(self, cap_pic_url) -> str:
+        return self.get_answer( self.get_id(cap_pic_url)  )
+
+    def get_id(self, cap_pic_url=None) -> int:
         payload = {
             "key": self.user_data.api_key,
             "method": "userrecaptcha", # Because V2 recaptcha is defaulted on init, I'll leave this
@@ -42,9 +45,12 @@ class Twocap:
             payload.pop("googlekey")
             payload["sitekey"] = self.user_data.sitekey
 
+        elif self.user_data.captcha_type == "normal":
+            payload["method"] = "base64"
+            payload["body"] = self.user_data.get_cap_img(cap_pic_url)
         while True:
             try:
-                resp = requests.post(BASEURL, json=payload).json()
+                resp = requests.post(BASEURL, data=payload).json()
                 if resp["status"] == 1:
                     return resp["request"] # Return the queue ID
 
@@ -59,16 +65,12 @@ class Twocap:
                 elif resp["request"] == "ERROR_WRONG_USER_KEY" or resp["request"] == "ERROR_KEY_DOES_NOT_EXIST":
                     # Throw Exception
                     raise captchaExceptions.WrongAPIKeyException()
+                
+                elif resp["request"] == "ERROR_TOO_BIG_CAPTCHA_FILESIZE":
+                    raise captchaExceptions.CaptchaIMGTooBig()
                 break
 
-            except captchaExceptions.NoBalanceException:
-                raise captchaExceptions.NoBalanceException()
-            except captchaExceptions.WrongSitekeyException:
-                raise captchaExceptions.WrongSitekeyException()
-            except captchaExceptions.WrongAPIKeyException:
-                raise captchaExceptions.WrongAPIKeyException()
-
-            except Exception:
+            except requests.RequestException:
                 pass
 
     def get_answer(self, queue_id) -> str:

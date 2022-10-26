@@ -3,7 +3,7 @@ package captchatoolsgo
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
@@ -27,7 +27,7 @@ func (t *Anticaptcha) getID() (int, error) {
 			time.Sleep(3 * time.Second)
 			continue
 		}
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 
@@ -69,7 +69,7 @@ func (t *Anticaptcha) getCaptchaAnswer() (string, error) {
 		}
 
 		// Parse Response
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.Status == "ready" {
@@ -82,10 +82,10 @@ func (t *Anticaptcha) getCaptchaAnswer() (string, error) {
 }
 
 /*
-	createPayload returns the payloads required to interact with the API.
+createPayload returns the payloads required to interact with the API.
 
-	Possible errors that can be returned:
-	1) ErrIncorrectCapType
+Possible errors that can be returned:
+1) ErrIncorrectCapType
 */
 func (t *Anticaptcha) createPayload() (string, error) {
 	// Define the payload we are going to send to the API

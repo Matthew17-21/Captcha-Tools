@@ -6,17 +6,14 @@ import "errors"
 const (
 	MODULE_VERSION string = "1.2.0" // Current version of this module
 
-	// The int 1 will represent Capmonter
-	CapmonsterSite int = 1
-
-	// The int 2 will represent Anticaptcha
-	AnticaptchaSite int = 2
-
-	// The int 3 will represent 2captcha
-	TwoCaptchaSite int = 3
+	CapmonsterSite  site = iota // The int 1 will represent Capmonter
+	AnticaptchaSite             // The int 2 will represent Anticaptcha
+	TwoCaptchaSite              // The int 3 will represent 2captcha
 )
 
 type (
+	site int
+
 	// Configurations for the captchas you are solving.
 	// For more a detailed documentation, visit
 	// https://github.com/Matthew17-21/Captcha-Tools

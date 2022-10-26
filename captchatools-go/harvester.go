@@ -13,7 +13,7 @@ this function was needed.
 For documentation on how to use this, checkout
 https://github.com/Matthew17-21/Captcha-Tools
 */
-func NewHarvester(solving_site int, config *Config) (Harvester, error) {
+func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 	config.CaptchaType = strings.ToLower(config.CaptchaType)
 	config.CaptchaURL = strings.ToLower(config.CaptchaURL)
 

@@ -10,6 +10,10 @@ go get github.com/Matthew17-21/Captcha-Tools/captchatools-go
 go get -u github.com/Matthew17-21/Captcha-Tools/captchatools-go
 ```
 
+# Breaking Changes in 2.0.0
+* Changed the type of site from type `int` to type `site`
+	- This affects the `NewHarvester()` param
+
 # How to use
 ```go
 package main

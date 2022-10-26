@@ -42,8 +42,10 @@ type (
 
 		- For documentation, visit https://github.com/Matthew17-21/Captcha-Tools
 	*/
-	Harvester struct {
-		childHarvester GetTokenFunc
+	// Interface that will allow us to interact with the methods from the
+	// individual structs
+	Harvester interface {
+		GetToken() (string, error) // Function to get a captcha token
 	}
 
 	// GetTokenFunc will allow us to interact with the `GetToken` struct method

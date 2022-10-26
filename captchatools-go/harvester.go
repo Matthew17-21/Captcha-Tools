@@ -18,7 +18,7 @@ func NewHarvester(solving_site int, config *Config) (Harvester, error) {
 	config.CaptchaURL = strings.ToLower(config.CaptchaURL)
 
 	// Check for any errors
-	switch strings.ToLower(config.CaptchaType) {
+	switch config.CaptchaType {
 	case "hcaptcha", "hcap", "v2", "v3":
 	default:
 		return nil, ErrIncorrectCapType

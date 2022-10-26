@@ -45,12 +45,6 @@ type (
 		GetToken() (string, error) // Function to get a captcha token
 	}
 
-	// GetTokenFunc will allow us to interact with the `GetToken` struct method
-	// that each captcha harvester has.
-	GetTokenFunc interface {
-		GetToken() (string, error)
-	}
-
 	Anticaptcha struct {
 		config *Config
 	}

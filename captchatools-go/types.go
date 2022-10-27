@@ -94,6 +94,11 @@ type (
 		} `json:"solution"`
 		Status string `json:"status"`
 	}
+	capmonsterBalanceResponse struct {
+		Balance   float32 `json:"balance"`
+		ErrorCode string  `json:"errorCode"`
+		ErrorID   int     `json:"errorId"`
+	}
 
 	twoCapIDPayload struct {
 		Key       string  `json:"key"`

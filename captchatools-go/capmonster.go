@@ -15,6 +15,9 @@ import (
 func (t *Capmonster) GetToken() (string, error) {
 	return t.getCaptchaAnswer()
 }
+func (t *Capmonster) GetBalance() (float32, error) {
+	return 0, nil
+}
 
 // Method to get Queue ID from the API.
 func (t *Capmonster) getID() (int, error) {

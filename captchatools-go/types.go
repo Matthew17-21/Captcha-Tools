@@ -43,6 +43,7 @@ type (
 	// individual structs
 	Harvester interface {
 		GetToken() (string, error) // Function to get a captcha token
+		GetBalance() (float32, error)
 	}
 
 	Anticaptcha struct {

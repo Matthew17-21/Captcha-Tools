@@ -13,6 +13,9 @@ import (
 func (t *Anticaptcha) GetToken() (string, error) {
 	return t.getCaptchaAnswer()
 }
+func (t *Anticaptcha) GetBalance() (float32, error) {
+	return 0, nil
+}
 
 // Method to get Queue ID from the API.
 func (t *Anticaptcha) getID() (int, error) {

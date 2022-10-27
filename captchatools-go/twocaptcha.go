@@ -14,6 +14,9 @@ import (
 func (t *Twocaptcha) GetToken() (string, error) {
 	return t.getCaptchaAnswer()
 }
+func (t *Twocaptcha) GetBalance() (float32, error) {
+	return 0, nil
+}
 
 // Method to get Queue ID from the API.
 func (t *Twocaptcha) getID() (string, error) {

@@ -120,3 +120,4 @@ var ErrWrongAPIKey error = errors.New("incorrect API Key for captcha solving sit
 var ErrWrongSitekey = errors.New("incorrect API Key for captcha solving site")
 var ErrNoHarvester = errors.New("incorrectly chose a captcha harvester. Refer to guide")
 var ErrIncorrectCapType = errors.New("incorrectly chose a captcha type. Refer to guide")
+var ErrMaxAttempts = errors.New("max attempts passed")

@@ -21,7 +21,10 @@ func (t *Anticaptcha) GetBalance() (float32, error) {
 // Method to get Queue ID from the API.
 func (t *Anticaptcha) getID() (int, error) {
 	// Get Payload
-	payload, _ := t.createPayload()
+	payload, err := t.createPayload()
+	if err != nil {
+		return 0, err
+	}
 
 	// Make request to get answer
 	response := &capmonsterIDResponse{}
@@ -36,18 +39,10 @@ func (t *Anticaptcha) getID() (int, error) {
 		json.Unmarshal(body, response)
 
 		// Parse the response
-		if response.ErrorID == 0 { // Means there was no error
-			return response.TaskID, nil
+		if response.ErrorID != 0 { // Means there was an error
+			return 0, errCodeToError(response.ErrorCode)
 		}
-		switch response.ErrorCode {
-		case "ERROR_ZERO_BALANCE":
-			return 0, ErrNoBalance
-		case "ERROR_RECAPTCHA_INVALID_SITEKEY":
-			return 0, ErrWrongSitekey
-		case "ERROR_KEY_DOES_NOT_EXIST":
-			return 0, ErrWrongAPIKey
-		}
-
+		return response.TaskID, nil
 	}
 }
 
@@ -102,14 +97,7 @@ func (t Anticaptcha) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.ErrorID != 0 {
-			switch response.ErrorCode {
-			case "ERROR_ZERO_BALANCE":
-				return 0, ErrNoBalance
-			case "ERROR_RECAPTCHA_INVALID_SITEKEY":
-				return 0, ErrWrongSitekey
-			case "ERROR_KEY_DOES_NOT_EXIST":
-				return 0, ErrWrongAPIKey
-			}
+			return 0, errCodeToError(response.ErrorCode)
 		}
 		return response.Balance, nil
 	}

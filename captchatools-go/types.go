@@ -1,11 +1,7 @@
 package captchatoolsgo
 
-import "errors"
-
 // General type declarations
 const (
-	MODULE_VERSION string = "1.2.0" // Current version of this module
-
 	CapmonsterSite  site = iota // The int 1 will represent Capmonter
 	AnticaptchaSite             // The int 2 will represent Anticaptcha
 	TwoCaptchaSite              // The int 3 will represent 2captcha
@@ -125,11 +121,3 @@ type (
 		Balance          float32 `json:"balance"`
 	}
 )
-
-// Error type declarations
-var ErrNoBalance error = errors.New("no balance on site")
-var ErrWrongAPIKey error = errors.New("incorrect API Key for captcha solving site")
-var ErrWrongSitekey = errors.New("incorrect API Key for captcha solving site")
-var ErrNoHarvester = errors.New("incorrectly chose a captcha harvester. Refer to guide")
-var ErrIncorrectCapType = errors.New("incorrectly chose a captcha type. Refer to guide")
-var ErrMaxAttempts = errors.New("max attempts passed")

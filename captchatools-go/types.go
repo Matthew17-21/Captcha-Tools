@@ -117,6 +117,13 @@ type (
 		Status  int    `json:"status"`
 		Request string `json:"request"`
 	}
+
+	anticaptchaBalanceResponse struct {
+		ErrorID          int     `json:"errorId"`
+		ErrorCode        string  `json:"errorCode"`
+		ErrorDescription string  `json:"errorDescription"`
+		Balance          float32 `json:"balance"`
+	}
 )
 
 // Error type declarations

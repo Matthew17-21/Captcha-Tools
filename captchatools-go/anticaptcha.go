@@ -3,6 +3,7 @@ package captchatoolsgo
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -14,7 +15,7 @@ func (t *Anticaptcha) GetToken() (string, error) {
 	return t.getCaptchaAnswer()
 }
 func (t *Anticaptcha) GetBalance() (float32, error) {
-	return 0, nil
+	return t.getBalance()
 }
 
 // Method to get Queue ID from the API.
@@ -82,6 +83,37 @@ func (t *Anticaptcha) getCaptchaAnswer() (string, error) {
 		}
 		time.Sleep(3 * time.Second)
 	}
+}
+
+func (t Anticaptcha) getBalance() (float32, error) {
+	// Attempt to get the balance from the API
+	// Max attempts is 5
+	payload := fmt.Sprintf(`{"clientKey": "%v"}`, t.config.Api_key)
+	response := &anticaptchaBalanceResponse{}
+	for i := 0; i < 5; i++ {
+		resp, err := http.Post("https://api.anti-captcha.com/getBalance", "application/json", bytes.NewBuffer([]byte(payload)))
+		if err != nil {
+			time.Sleep(1 * time.Second)
+			continue
+		}
+
+		// Parse Response
+		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		json.Unmarshal(body, response)
+		if response.ErrorID != 0 {
+			switch response.ErrorCode {
+			case "ERROR_ZERO_BALANCE":
+				return 0, ErrNoBalance
+			case "ERROR_RECAPTCHA_INVALID_SITEKEY":
+				return 0, ErrWrongSitekey
+			case "ERROR_KEY_DOES_NOT_EXIST":
+				return 0, ErrWrongAPIKey
+			}
+		}
+		return response.Balance, nil
+	}
+	return 0, ErrMaxAttempts
 }
 
 /*

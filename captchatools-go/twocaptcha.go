@@ -3,9 +3,11 @@ package captchatoolsgo
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -15,7 +17,7 @@ func (t *Twocaptcha) GetToken() (string, error) {
 	return t.getCaptchaAnswer()
 }
 func (t *Twocaptcha) GetBalance() (float32, error) {
-	return 0, nil
+	return t.getBalance()
 }
 
 // Method to get Queue ID from the API.
@@ -84,6 +86,45 @@ func (t *Twocaptcha) getCaptchaAnswer() (string, error) {
 		}
 		time.Sleep(3 * time.Second)
 	}
+}
+
+func (t Twocaptcha) getBalance() (float32, error) {
+	// Attempt to get the balance from the API
+	// Max attempts is 5
+	url := fmt.Sprintf("https://2captcha.com/res.php?key=%v&action=getbalance&json=1", t.config.Api_key)
+	response := &twocaptchaResponse{}
+	for i := 0; i < 5; i++ {
+		resp, err := http.Get(url)
+		if err != nil {
+			time.Sleep(1 * time.Second)
+			continue
+		}
+
+		// Parse Response
+		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		json.Unmarshal(body, response)
+		if response.Status != 0 {
+			switch response.Request {
+			case "ERROR_ZERO_BALANCE":
+				return 0, ErrNoBalance
+			case "ERROR_RECAPTCHA_INVALID_SITEKEY":
+				return 0, ErrWrongSitekey
+			case "ERROR_KEY_DOES_NOT_EXIST":
+				return 0, ErrWrongAPIKey
+			}
+		}
+
+		// Convert to float32
+		var balance float32
+		value, err := strconv.ParseFloat(response.Request, 32)
+		if err != nil {
+			return 0, errors.New("unable to convert balance")
+		}
+		balance = float32(value)
+		return balance, nil
+	}
+	return 0, ErrMaxAttempts
 }
 
 /*

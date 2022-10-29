@@ -11,7 +11,7 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
-func (a Anticaptcha) GetToken() (string, error) {
+func (a Anticaptcha) GetToken() (*CaptchaAnswer, error) {
 	return a.getCaptchaAnswer()
 }
 func (a Anticaptcha) GetBalance() (float32, error) {
@@ -47,11 +47,11 @@ func (a Anticaptcha) getID() (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (a Anticaptcha) getCaptchaAnswer() (string, error) {
+func (a Anticaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 	// Get Queue ID
 	queueID, err := a.getID()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// Get Captcha Answer
@@ -72,7 +72,12 @@ func (a Anticaptcha) getCaptchaAnswer() (string, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.Status == "ready" {
-			return response.Solution.GRecaptchaResponse, nil
+			return newCaptchaAnswer(
+				queueID,
+				response.Solution.GRecaptchaResponse,
+				a.config.Api_key,
+				AnticaptchaSite,
+			), nil
 		} else if response.ErrorID == 12 || response.ErrorID == 16 { // Captcha unsolvable || TaskID doesn't exist
 			a.GetToken()
 		}

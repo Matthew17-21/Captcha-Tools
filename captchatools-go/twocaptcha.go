@@ -13,7 +13,7 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
-func (t Twocaptcha) GetToken() (string, error) {
+func (t Twocaptcha) GetToken() (*CaptchaAnswer, error) {
 	return t.getCaptchaAnswer()
 }
 func (t Twocaptcha) GetBalance() (float32, error) {
@@ -46,11 +46,11 @@ func (t Twocaptcha) getID() (string, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (t Twocaptcha) getCaptchaAnswer() (string, error) {
+func (t Twocaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 	// Get Queue ID
 	queueID, err := t.getID()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// Get Captcha Answer
@@ -72,7 +72,12 @@ func (t Twocaptcha) getCaptchaAnswer() (string, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.Status == 1 {
-			return response.Request, nil
+			return newCaptchaAnswer(
+				queueID,
+				response.Request,
+				t.config.Api_key,
+				TwoCaptchaSite,
+			), nil
 		} else if response.Request == "ERROR_CAPTCHA_UNSOLVABLE" {
 			t.GetToken()
 		}

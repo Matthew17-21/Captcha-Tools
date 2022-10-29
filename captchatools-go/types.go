@@ -38,8 +38,15 @@ type (
 	// Interface that will allow us to interact with the methods from the
 	// individual structs
 	Harvester interface {
-		GetToken() (string, error) // Function to get a captcha token
+		GetToken() (*CaptchaAnswer, error) // Function to get a captcha token
 		GetBalance() (float32, error)
+	}
+
+	CaptchaAnswer struct {
+		id           interface{} // id from the solving site
+		api_key      string      // api key to the solving site
+		solving_site site        // site used to get the captcha answer
+		Token        string      // the actual captcha answer
 	}
 
 	Anticaptcha struct {

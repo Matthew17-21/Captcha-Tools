@@ -13,7 +13,7 @@ import (
    This file will contain the code to interact with capmonster.cloud API
 */
 
-func (c Capmonster) GetToken() (string, error) {
+func (c Capmonster) GetToken() (*CaptchaAnswer, error) {
 	return c.getCaptchaAnswer()
 }
 func (c Capmonster) GetBalance() (float32, error) {
@@ -46,11 +46,11 @@ func (c Capmonster) getID() (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (c Capmonster) getCaptchaAnswer() (string, error) {
+func (c Capmonster) getCaptchaAnswer() (*CaptchaAnswer, error) {
 	// Get Queue ID
 	queueID, err := c.getID()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// Get Captcha Answer
@@ -71,7 +71,12 @@ func (c Capmonster) getCaptchaAnswer() (string, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.Status == "ready" {
-			return response.Solution.GRecaptchaResponse, nil
+			return newCaptchaAnswer(
+				queueID,
+				response.Solution.GRecaptchaResponse,
+				c.config.Api_key,
+				CapmonsterSite,
+			), nil
 		} else if response.ErrorID == 12 || response.ErrorID == 16 { // Captcha unsolvable || TaskID doesn't exist
 			c.GetToken()
 		}

@@ -11,17 +11,17 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
-func (t *Anticaptcha) GetToken() (string, error) {
-	return t.getCaptchaAnswer()
+func (a Anticaptcha) GetToken() (string, error) {
+	return a.getCaptchaAnswer()
 }
-func (t *Anticaptcha) GetBalance() (float32, error) {
-	return t.getBalance()
+func (a Anticaptcha) GetBalance() (float32, error) {
+	return a.getBalance()
 }
 
 // Method to get Queue ID from the API.
-func (t *Anticaptcha) getID() (int, error) {
+func (a Anticaptcha) getID() (int, error) {
 	// Get Payload
-	payload, err := t.createPayload()
+	payload, err := a.createPayload()
 	if err != nil {
 		return 0, err
 	}
@@ -47,16 +47,16 @@ func (t *Anticaptcha) getID() (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (t *Anticaptcha) getCaptchaAnswer() (string, error) {
+func (a Anticaptcha) getCaptchaAnswer() (string, error) {
 	// Get Queue ID
-	queueID, err := t.getID()
+	queueID, err := a.getID()
 	if err != nil {
 		return "", err
 	}
 
 	// Get Captcha Answer
 	payload, _ := json.Marshal(capmonsterCapAnswerPayload{
-		ClientKey: t.config.Api_key,
+		ClientKey: a.config.Api_key,
 		TaskID:    queueID,
 	})
 	response := &capmonsterTokenResponse{}
@@ -74,16 +74,16 @@ func (t *Anticaptcha) getCaptchaAnswer() (string, error) {
 		if response.Status == "ready" {
 			return response.Solution.GRecaptchaResponse, nil
 		} else if response.ErrorID == 12 || response.ErrorID == 16 { // Captcha unsolvable || TaskID doesn't exist
-			t.GetToken()
+			a.GetToken()
 		}
 		time.Sleep(3 * time.Second)
 	}
 }
 
-func (t Anticaptcha) getBalance() (float32, error) {
+func (a Anticaptcha) getBalance() (float32, error) {
 	// Attempt to get the balance from the API
 	// Max attempts is 5
-	payload := fmt.Sprintf(`{"clientKey": "%v"}`, t.config.Api_key)
+	payload := fmt.Sprintf(`{"clientKey": "%v"}`, a.config.Api_key)
 	response := &anticaptchaBalanceResponse{}
 	for i := 0; i < 5; i++ {
 		resp, err := http.Post("https://api.anti-captcha.com/getBalance", "application/json", bytes.NewBuffer([]byte(payload)))
@@ -110,10 +110,10 @@ createPayload returns the payloads required to interact with the API.
 Possible errors that can be returned:
 1) ErrIncorrectCapType
 */
-func (t *Anticaptcha) createPayload() (string, error) {
+func (a Anticaptcha) createPayload() (string, error) {
 	// Define the payload we are going to send to the API
 	payload := capmonsterIDPayload{
-		ClientKey: t.config.Api_key,
+		ClientKey: a.config.Api_key,
 		Task: struct {
 			WebsiteURL  string  "json:\"websiteURL\""
 			WebsiteKey  string  "json:\"websiteKey\""
@@ -122,23 +122,23 @@ func (t *Anticaptcha) createPayload() (string, error) {
 			MinScore    float32 "json:\"minScore,omitempty\""
 			PageAction  string  "json:\"pageAction,omitempty\""
 		}{
-			WebsiteURL: t.config.CaptchaURL,
-			WebsiteKey: t.config.Sitekey,
-			Type:       t.config.CaptchaType,
+			WebsiteURL: a.config.CaptchaURL,
+			WebsiteKey: a.config.Sitekey,
+			Type:       a.config.CaptchaType,
 		},
 	}
 
 	// Add any other keys to the payload
-	switch t.config.CaptchaType {
+	switch a.config.CaptchaType {
 	case "v2":
 		payload.Task.Type = "NoCaptchaTaskProxyless"
-		if t.config.IsInvisibleCaptcha {
-			payload.Task.IsInvisible = t.config.IsInvisibleCaptcha
+		if a.config.IsInvisibleCaptcha {
+			payload.Task.IsInvisible = a.config.IsInvisibleCaptcha
 		}
 	case "v3":
 		payload.Task.Type = "RecaptchaV3TaskProxyless"
-		payload.Task.MinScore = t.config.MinScore
-		payload.Task.PageAction = t.config.Action
+		payload.Task.MinScore = a.config.MinScore
+		payload.Task.PageAction = a.config.Action
 	case "hcaptcha", "hcap":
 		payload.Task.Type = "HCaptchaTaskProxyless"
 	default:

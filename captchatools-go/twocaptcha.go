@@ -13,15 +13,15 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
-func (t *Twocaptcha) GetToken() (string, error) {
+func (t Twocaptcha) GetToken() (string, error) {
 	return t.getCaptchaAnswer()
 }
-func (t *Twocaptcha) GetBalance() (float32, error) {
+func (t Twocaptcha) GetBalance() (float32, error) {
 	return t.getBalance()
 }
 
 // Method to get Queue ID from the API.
-func (t *Twocaptcha) getID() (string, error) {
+func (t Twocaptcha) getID() (string, error) {
 	// Get Payload
 	payload, _ := t.createPayload()
 
@@ -46,7 +46,7 @@ func (t *Twocaptcha) getID() (string, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (t *Twocaptcha) getCaptchaAnswer() (string, error) {
+func (t Twocaptcha) getCaptchaAnswer() (string, error) {
 	// Get Queue ID
 	queueID, err := t.getID()
 	if err != nil {
@@ -118,7 +118,7 @@ createPayload returns the payloads required to interact with the API.
 Possible errors that can be returned:
 1) ErrIncorrectCapType
 */
-func (t *Twocaptcha) createPayload() (string, error) {
+func (t Twocaptcha) createPayload() (string, error) {
 	// Define the payload we are going to send to the API
 	payload := twoCapIDPayload{
 		Key:     t.config.Api_key,

@@ -23,10 +23,13 @@ func (c Capmonster) GetBalance() (float32, error) {
 // Method to get Queue ID from the API.
 func (c Capmonster) getID() (int, error) {
 	// Get Payload
-	payload, _ := c.createPayload()
+	payload, err := c.createPayload()
+	if err != nil {
+		return 0, err
+	}
 
 	// Make request to get answer
-	for {
+	for i := 0; i < 100; i++ {
 		resp, err := http.Post("https://api.capmonster.cloud/createTask", "application/json", bytes.NewBuffer([]byte(payload)))
 		if err != nil {
 			time.Sleep(3 * time.Second)
@@ -43,6 +46,7 @@ func (c Capmonster) getID() (int, error) {
 		}
 		return response.TaskID, nil
 	}
+	return 0, ErrMaxAttempts
 }
 
 // This method gets the captcha token from the Capmonster API
@@ -59,7 +63,7 @@ func (c Capmonster) getCaptchaAnswer() (*CaptchaAnswer, error) {
 		TaskID:    queueID,
 	})
 	response := &capmonsterTokenResponse{}
-	for {
+	for i := 0; i < 100; i++ {
 		resp, err := http.Post("https://api.capmonster.cloud/getTaskResult", "application/json", bytes.NewBuffer([]byte(payload)))
 		if err != nil {
 			time.Sleep(3 * time.Second)
@@ -70,18 +74,25 @@ func (c Capmonster) getCaptchaAnswer() (*CaptchaAnswer, error) {
 		body, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		json.Unmarshal(body, response)
-		if response.Status == "ready" {
-			return newCaptchaAnswer(
-				queueID,
-				response.Solution.GRecaptchaResponse,
-				c.config.Api_key,
-				CapmonsterSite,
-			), nil
-		} else if response.ErrorID == 12 || response.ErrorID == 16 { // Captcha unsolvable || TaskID doesn't exist
-			c.GetToken()
+
+		// Check for any errors
+		if response.ErrorID != 0 { // means there was an error
+			return nil, errCodeToError(response.ErrorCode)
 		}
-		time.Sleep(3 * time.Second)
+
+		// Check if captcha is ready
+		if response.Status == "processing" {
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		return newCaptchaAnswer(
+			queueID,
+			response.Solution.GRecaptchaResponse,
+			c.config.Api_key,
+			AnticaptchaSite,
+		), nil
 	}
+	return nil, ErrMaxAttempts
 }
 
 // getBalance() returns the balance on the API key

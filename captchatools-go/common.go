@@ -39,7 +39,7 @@ func errCodeToError(id string) error {
 		err = ErrInvisibleCaptcha
 	case "ERROR_RECAPTCHA_OLD_BROWSER":
 		err = ErrOldUA
-	case "ERROR_RECAPTCHA_INVALID_DOMAIN", "ERROR_DOMAIN_NOT_ALLOWED":
+	case "ERROR_RECAPTCHA_INVALID_DOMAIN", "ERROR_DOMAIN_NOT_ALLOWED", "ERROR_PAGEURL":
 		err = ErrDomain
 	case "ERROR_RECAPTCHA_TIMEOUT":
 		err = ErrCaptchaTimeout

@@ -23,10 +23,13 @@ func (t Twocaptcha) GetBalance() (float32, error) {
 // Method to get Queue ID from the API.
 func (t Twocaptcha) getID() (string, error) {
 	// Get Payload
-	payload, _ := t.createPayload()
+	payload, err := t.createPayload()
+	if err != nil {
+		return "", err
+	}
 
 	// Make request to get answer
-	for {
+	for i := 0; i < 100; i++ {
 		resp, err := http.Post("http://2captcha.com/in.php", "application/json", bytes.NewBuffer([]byte(payload)))
 		if err != nil {
 			time.Sleep(3 * time.Second)
@@ -43,6 +46,7 @@ func (t Twocaptcha) getID() (string, error) {
 		}
 		return response.Request, nil
 	}
+	return "", ErrMaxAttempts
 }
 
 // This method gets the captcha token from the Capmonster API
@@ -60,7 +64,7 @@ func (t Twocaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 		t.config.Api_key,
 		queueID,
 	)
-	for {
+	for i := 0; i < 100; i++ {
 		resp, err := http.Get(urlToAnswer)
 		if err != nil {
 			time.Sleep(3 * time.Second)
@@ -71,18 +75,26 @@ func (t Twocaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 		body, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		json.Unmarshal(body, response)
-		if response.Status == 1 {
-			return newCaptchaAnswer(
-				queueID,
-				response.Request,
-				t.config.Api_key,
-				TwoCaptchaSite,
-			), nil
-		} else if response.Request == "ERROR_CAPTCHA_UNSOLVABLE" {
-			t.GetToken()
+
+		fmt.Println(string(body))
+		// Check for any errors
+		if response.Status == 0 && response.Request != "CAPCHA_NOT_READY" {
+			return nil, errCodeToError(response.Request)
 		}
-		time.Sleep(3 * time.Second)
+
+		// Check if captcha is ready
+		if response.Request == "CAPCHA_NOT_READY" {
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		return newCaptchaAnswer(
+			queueID,
+			response.Request,
+			t.config.Api_key,
+			TwoCaptchaSite,
+		), nil
 	}
+	return nil, ErrMaxAttempts
 }
 
 func (t Twocaptcha) getBalance() (float32, error) {

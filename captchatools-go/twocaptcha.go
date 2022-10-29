@@ -38,18 +38,10 @@ func (t *Twocaptcha) getID() (string, error) {
 		json.Unmarshal(body, response)
 
 		// Parse the response
-		if response.Status == 1 { // Means there was no error
-			return response.Request, nil
+		if response.Status != 1 { // Means there was an error
+			return "", errCodeToError(response.Request)
 		}
-		switch response.Request {
-		case "ERROR_ZERO_BALANCE":
-			return "", ErrNoBalance
-		case "ERROR_WRONG_GOOGLEKEY":
-			return "", ErrWrongSitekey
-		case "ERROR_WRONG_USER_KEY", "ERROR_KEY_DOES_NOT_EXIST":
-			return "", ErrWrongAPIKey
-		}
-
+		return response.Request, nil
 	}
 }
 
@@ -104,15 +96,8 @@ func (t Twocaptcha) getBalance() (float32, error) {
 		body, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		json.Unmarshal(body, response)
-		if response.Status != 0 {
-			switch response.Request {
-			case "ERROR_ZERO_BALANCE":
-				return 0, ErrNoBalance
-			case "ERROR_RECAPTCHA_INVALID_SITEKEY":
-				return 0, ErrWrongSitekey
-			case "ERROR_KEY_DOES_NOT_EXIST":
-				return 0, ErrWrongAPIKey
-			}
+		if response.Status == 0 {
+			return 0, errCodeToError(response.Request)
 		}
 
 		// Convert to float32

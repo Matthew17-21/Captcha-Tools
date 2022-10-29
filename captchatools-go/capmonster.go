@@ -38,18 +38,10 @@ func (t *Capmonster) getID() (int, error) {
 		json.Unmarshal(body, response)
 
 		// Parse the response
-		if response.ErrorID == 0 { // Means there was no error
-			return response.TaskID, nil
+		if response.ErrorID != 0 { // Means there was an error
+			return 0, errCodeToError(response.ErrorCode)
 		}
-		switch response.ErrorCode {
-		case "ERROR_ZERO_BALANCE":
-			return 0, ErrNoBalance
-		case "ERROR_RECAPTCHA_INVALID_SITEKEY":
-			return 0, ErrWrongSitekey
-		case "ERROR_KEY_DOES_NOT_EXIST":
-			return 0, ErrWrongAPIKey
-		}
-
+		return response.TaskID, nil
 	}
 }
 
@@ -105,14 +97,7 @@ func (t Capmonster) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.ErrorID != 0 {
-			switch response.ErrorCode {
-			case "ERROR_ZERO_BALANCE":
-				return 0, ErrNoBalance
-			case "ERROR_RECAPTCHA_INVALID_SITEKEY":
-				return 0, ErrWrongSitekey
-			case "ERROR_KEY_DOES_NOT_EXIST":
-				return 0, ErrWrongAPIKey
-			}
+			return 0, errCodeToError(response.ErrorCode)
 		}
 		return response.Balance, nil
 	}

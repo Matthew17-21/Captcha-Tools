@@ -1,6 +1,8 @@
 package captchatoolsgo
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	// Error type declarations
@@ -23,6 +25,7 @@ var (
 	ErrOldUA            = errors.New("captcha provider reported that the browser user-agent is not compatible with their javascript")
 	ErrInvisibleCaptcha = errors.New("an attempt was made to solve an Invisible Recaptcha as if it was a regular one")
 	ErrVisibleCaptcha   = errors.New("attempted solution of usual Recaptcha V2 as Recaptcha V2 invisible. Remove flag 'isInvisible' from the API payload")
+	ErrMissingValues    = errors.New("some of the required values for successive user emulation are missing")
 )
 
 // errCodeToError converts an error ID returned from the site and
@@ -60,6 +63,8 @@ func errCodeToError(id string) error {
 		err = ErrWrongSitekey
 	case "ERROR_KEY_DOES_NOT_EXIST", "ERROR_WRONG_USER_KEY":
 		err = ErrWrongAPIKey
+	case "ERROR_INCORRECT_SESSION_DATA":
+		err = ErrMissingValues
 	}
 	return err
 }

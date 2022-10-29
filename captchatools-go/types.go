@@ -91,8 +91,9 @@ type (
 	}
 
 	capmonsterTokenResponse struct {
-		ErrorID  int `json:"errorId"`
-		Solution struct {
+		ErrorID   int    `json:"errorId"`
+		ErrorCode string `json:"errorCode"`
+		Solution  struct {
 			GRecaptchaResponse string `json:"gRecaptchaResponse"`
 		} `json:"solution"`
 		Status string `json:"status"`

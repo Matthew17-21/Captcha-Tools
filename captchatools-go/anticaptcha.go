@@ -143,6 +143,9 @@ func (a Anticaptcha) createPayload() (string, error) {
 	}
 
 	// Add any other keys to the payload
+	if a.config.SoftID != 0 {
+		payload.SoftID = a.config.SoftID
+	}
 	switch a.config.CaptchaType {
 	case "v2":
 		payload.Task.Type = "NoCaptchaTaskProxyless"

@@ -67,6 +67,7 @@ type (
 	// This struct will be the payload to get the queue ID from capmonster
 	capmonsterIDPayload struct {
 		ClientKey string `json:"clientKey"`
+		SoftID    int    `json:"softId,omitempty"`
 		Task      struct {
 			WebsiteURL  string  `json:"websiteURL"`
 			WebsiteKey  string  `json:"websiteKey"`

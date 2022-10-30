@@ -1,7 +1,5 @@
 package captchatoolsgo
 
-import "strings"
-
 /*
 NewHarvester returns a captcha harvester based on the info given
 by the caller. An error is returned if there is no proper
@@ -14,9 +12,6 @@ For documentation on how to use this, checkout
 https://github.com/Matthew17-21/Captcha-Tools
 */
 func NewHarvester(solving_site site, config *Config) (Harvester, error) {
-	config.CaptchaType = strings.ToLower(config.CaptchaType)
-	config.CaptchaURL = strings.ToLower(config.CaptchaURL)
-
 	// Check for any errors
 	switch config.CaptchaType {
 	case "hcaptcha", "hcap", "v2", "v3":

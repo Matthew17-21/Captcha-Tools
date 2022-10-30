@@ -7,21 +7,28 @@ const (
 	TwoCaptchaSite              // The int 3 will represent 2captcha
 )
 
+const (
+	V2Captcha captchaType = "v2"
+	V3Captcha captchaType = "v3"
+	HCaptcha  captchaType = "hcaptcha"
+)
+
 type (
-	site int
+	site        int
+	captchaType string
 
 	// Configurations for the captchas you are solving.
 	// For more a detailed documentation, visit
 	// https://github.com/Matthew17-21/Captcha-Tools
 	Config struct {
-		Api_key            string  // The API Key for the captcha solving site.
-		Sitekey            string  // Sitekey from the site where captcha is loaded.
-		CaptchaURL         string  // URL where the captcha is located.
-		CaptchaType        string  // Type of captcha you are solving. Visit https://github.com/Matthew17-21/Captcha-Tools for types
-		Action             string  // Action that is associated with the V3 captcha.
-		IsInvisibleCaptcha bool    // If the captcha is invisible or not.
-		MinScore           float32 // Minimum score for v3 captchas.
-		SoftID             int     // SoftID for 2captcha. Developers get reward 10% of spendings of their software users.
+		Api_key            string      // The API Key for the captcha solving site.
+		Sitekey            string      // Sitekey from the site where captcha is loaded.
+		CaptchaURL         string      // URL where the captcha is located.
+		CaptchaType        captchaType // Type of captcha you are solving. Visit https://github.com/Matthew17-21/Captcha-Tools for types
+		Action             string      // Action that is associated with the V3 captcha.
+		IsInvisibleCaptcha bool        // If the captcha is invisible or not.
+		MinScore           float32     // Minimum score for v3 captchas.
+		SoftID             int         // SoftID for 2captcha. Developers get reward 10% of spendings of their software users.
 	}
 
 	/*
@@ -69,12 +76,12 @@ type (
 		ClientKey string `json:"clientKey"`
 		SoftID    int    `json:"softId,omitempty"`
 		Task      struct {
-			WebsiteURL  string  `json:"websiteURL"`
-			WebsiteKey  string  `json:"websiteKey"`
-			Type        string  `json:"type"`
-			IsInvisible bool    `json:"isInvisible,omitempty"`
-			MinScore    float32 `json:"minScore,omitempty"`
-			PageAction  string  `json:"pageAction,omitempty"`
+			WebsiteURL  string      `json:"websiteURL"`
+			WebsiteKey  string      `json:"websiteKey"`
+			Type        captchaType `json:"type"`
+			IsInvisible bool        `json:"isInvisible,omitempty"`
+			MinScore    float32     `json:"minScore,omitempty"`
+			PageAction  string      `json:"pageAction,omitempty"`
 		} `json:"task"`
 	}
 	capmonsterCapAnswerPayload struct {

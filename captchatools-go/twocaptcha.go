@@ -148,17 +148,17 @@ func (t Twocaptcha) createPayload() (string, error) {
 		payload.SoftID = t.config.SoftID
 	}
 	switch t.config.CaptchaType {
-	case "v2":
+	case V2Captcha:
 		payload.Googlekey = t.config.Sitekey
 		if t.config.IsInvisibleCaptcha {
 			payload.Invisible = 1
 		}
-	case "v3":
+	case V3Captcha:
 		payload.Googlekey = t.config.Sitekey
 		payload.Version = "v3"
 		payload.Action = t.config.Action
 		payload.MinScore = t.config.MinScore
-	case "hcaptcha", "hcap":
+	case HCaptcha:
 		payload.Method = "hcaptcha"
 		payload.Sitekey = t.config.Sitekey
 	default:

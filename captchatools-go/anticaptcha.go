@@ -129,12 +129,12 @@ func (a Anticaptcha) createPayload() (string, error) {
 	payload := capmonsterIDPayload{
 		ClientKey: a.config.Api_key,
 		Task: struct {
-			WebsiteURL  string  "json:\"websiteURL\""
-			WebsiteKey  string  "json:\"websiteKey\""
-			Type        string  "json:\"type\""
-			IsInvisible bool    "json:\"isInvisible,omitempty\""
-			MinScore    float32 "json:\"minScore,omitempty\""
-			PageAction  string  "json:\"pageAction,omitempty\""
+			WebsiteURL  string      "json:\"websiteURL\""
+			WebsiteKey  string      "json:\"websiteKey\""
+			Type        captchaType "json:\"type\""
+			IsInvisible bool        "json:\"isInvisible,omitempty\""
+			MinScore    float32     "json:\"minScore,omitempty\""
+			PageAction  string      "json:\"pageAction,omitempty\""
 		}{
 			WebsiteURL: a.config.CaptchaURL,
 			WebsiteKey: a.config.Sitekey,
@@ -147,16 +147,16 @@ func (a Anticaptcha) createPayload() (string, error) {
 		payload.SoftID = a.config.SoftID
 	}
 	switch a.config.CaptchaType {
-	case "v2":
+	case V2Captcha:
 		payload.Task.Type = "NoCaptchaTaskProxyless"
 		if a.config.IsInvisibleCaptcha {
 			payload.Task.IsInvisible = a.config.IsInvisibleCaptcha
 		}
-	case "v3":
+	case V3Captcha:
 		payload.Task.Type = "RecaptchaV3TaskProxyless"
 		payload.Task.MinScore = a.config.MinScore
 		payload.Task.PageAction = a.config.Action
-	case "hcaptcha", "hcap":
+	case HCaptcha:
 		payload.Task.Type = "HCaptchaTaskProxyless"
 	default:
 		return "", ErrIncorrectCapType

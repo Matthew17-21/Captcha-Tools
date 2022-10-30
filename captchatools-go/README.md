@@ -14,6 +14,7 @@ go get -u github.com/Matthew17-21/Captcha-Tools/captchatools-go
 * Changed the type of site from type `int` to type `site`
 	- This affects the `NewHarvester()` param
 * Returns a `CaptchaAnswer` object rather than just the captcha token
+* Made captchas their own type
 
 # How to use
 ```go

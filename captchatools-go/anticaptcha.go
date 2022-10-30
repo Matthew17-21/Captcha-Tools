@@ -88,6 +88,7 @@ func (a Anticaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 			queueID,
 			response.Solution.GRecaptchaResponse,
 			a.config.Api_key,
+			a.config.CaptchaType,
 			AnticaptchaSite,
 		), nil
 	}
@@ -163,4 +164,45 @@ func (a Anticaptcha) createPayload() (string, error) {
 	}
 	encoded, _ := json.Marshal(payload)
 	return string(encoded), nil
+}
+
+func report_anticaptcha(was_correct bool, c *CaptchaAnswer) error {
+	var endpoint string
+	switch c.capType {
+	case V2Captcha, V3Captcha:
+		endpoint = "reportIncorrectRecaptcha"
+	case HCaptcha:
+		endpoint = "reportIncorrectHcaptcha"
+	default:
+		return ErrIncorrectCapType
+	}
+	if was_correct && (c.capType == V2Captcha || c.capType == V3Captcha) {
+		endpoint = "reportCorrectRecaptcha"
+	}
+
+	// Make request
+	response := &capmonsterTokenResponse{}
+	payload, _ := json.Marshal(capmonsterCapAnswerPayload{
+		ClientKey: c.api_key,
+		TaskID:    c.id.(int),
+	})
+	for i := 0; i < 100; i++ {
+		resp, err := http.Post("https://api.anti-captcha.com/"+endpoint, "application/json", bytes.NewBuffer([]byte(payload)))
+		if err != nil {
+			time.Sleep(3 * time.Second)
+			continue
+		}
+
+		// Parse Response
+		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		json.Unmarshal(body, response)
+
+		// Check for any errors
+		if response.ErrorID > 0 { // means there was an error
+			return errCodeToError(response.ErrorCode)
+		}
+		return nil
+	}
+	return ErrMaxAttempts
 }

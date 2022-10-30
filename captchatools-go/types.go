@@ -92,13 +92,19 @@ type (
 		ClientKey string `json:"clientKey"`
 		SoftID    int    `json:"softId,omitempty"`
 		Task      struct {
-			WebsiteURL  string      `json:"websiteURL"`
-			WebsiteKey  string      `json:"websiteKey"`
-			Type        captchaType `json:"type"`
-			IsInvisible bool        `json:"isInvisible,omitempty"`
-			MinScore    float32     `json:"minScore,omitempty"`
-			PageAction  string      `json:"pageAction,omitempty"`
-			Body        string      `json:"body,omitempty"`
+			WebsiteURL    string      `json:"websiteURL"`
+			WebsiteKey    string      `json:"websiteKey"`
+			Type          captchaType `json:"type"`
+			IsInvisible   bool        `json:"isInvisible,omitempty"`
+			MinScore      float32     `json:"minScore,omitempty"`
+			PageAction    string      `json:"pageAction,omitempty"`
+			Body          string      `json:"body,omitempty"`
+			ProxyType     string      `json:"proxyType,omitempty"`
+			ProxyAddress  string      `json:"proxyAddress,omitempty"`
+			ProxyPort     int         `json:"proxyPort,omitempty"`
+			ProxyLogin    string      `json:"proxyLogin,omitempty"`
+			ProxyPassword string      `json:"proxyPassword,omitempty"`
+			UserAgent     string      `json:"userAgent,omitempty"`
 		} `json:"task"`
 	}
 	capmonsterCapAnswerPayload struct {

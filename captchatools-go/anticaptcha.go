@@ -3,9 +3,11 @@ package captchatoolsgo
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -139,13 +141,19 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 	payload := capmonsterIDPayload{
 		ClientKey: a.config.Api_key,
 		Task: struct {
-			WebsiteURL  string      "json:\"websiteURL\""
-			WebsiteKey  string      "json:\"websiteKey\""
-			Type        captchaType "json:\"type\""
-			IsInvisible bool        "json:\"isInvisible,omitempty\""
-			MinScore    float32     "json:\"minScore,omitempty\""
-			PageAction  string      "json:\"pageAction,omitempty\""
-			Body        string      "json:\"body,omitempty\""
+			WebsiteURL    string      "json:\"websiteURL\""
+			WebsiteKey    string      "json:\"websiteKey\""
+			Type          captchaType "json:\"type\""
+			IsInvisible   bool        "json:\"isInvisible,omitempty\""
+			MinScore      float32     "json:\"minScore,omitempty\""
+			PageAction    string      "json:\"pageAction,omitempty\""
+			Body          string      "json:\"body,omitempty\""
+			ProxyType     string      "json:\"proxyType,omitempty\""
+			ProxyAddress  string      "json:\"proxyAddress,omitempty\""
+			ProxyPort     int         "json:\"proxyPort,omitempty\""
+			ProxyLogin    string      "json:\"proxyLogin,omitempty\""
+			ProxyPassword string      "json:\"proxyPassword,omitempty\""
+			UserAgent     string      "json:\"userAgent,omitempty\""
 		}{
 			WebsiteURL: a.config.CaptchaURL,
 			WebsiteKey: a.config.Sitekey,
@@ -167,6 +175,30 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 
 	case V2Captcha:
 		payload.Task.Type = "NoCaptchaTaskProxyless"
+
+		// Check for proxy data
+		if data != nil && data.Proxy != nil {
+			payload.Task.Type = "RecaptchaV2Task"
+			if data.ProxyType == "" {
+				data.ProxyType = "http"
+			}
+			payload.Task.ProxyType = data.ProxyType
+			payload.Task.ProxyAddress = data.Proxy.Ip
+			portInt, err := strconv.Atoi(data.Proxy.Port)
+			if err != nil {
+				return "", errors.New("error converting proxy port to int")
+			}
+			payload.Task.ProxyPort = portInt
+
+			if data.Proxy.IsUserAuth() {
+				payload.Task.ProxyLogin = data.Proxy.User
+				payload.Task.ProxyPassword = data.Proxy.Password
+			}
+
+			payload.Task.UserAgent = data.UserAgent // REQUIRED WITH PROXIES
+
+		}
+
 		if a.config.IsInvisibleCaptcha {
 			payload.Task.IsInvisible = a.config.IsInvisibleCaptcha
 		}

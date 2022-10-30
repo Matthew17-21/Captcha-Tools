@@ -128,6 +128,63 @@ func TestGetAnticapV2(t *testing.T) {
 	}
 }
 
+// TestAnticaptchaGetV2Additional tests that it can successfully get a V2 token from 2Captcha
+// with additional data
+// to run this specific test:
+// go test -v -run ^TestAnticaptchaGetV2Additional$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
+func TestAnticaptchaGetV2Additional(t *testing.T) {
+	configs := []testConfigs{
+		{
+			SolvingSite: AnticaptchaSite,
+			Name:        "Working V2 Config with custom User Agent",
+			Config:      &Config{Api_key: antiCapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: "v2"},
+			AdditionalData: &AdditionalData{
+				UserAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+			},
+			ExpectError: false,
+		},
+		{
+			SolvingSite: AnticaptchaSite,
+			Name:        "Working V2 Config with proxy",
+			Config:      &Config{Api_key: antiCapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: "v2"},
+			AdditionalData: &AdditionalData{
+				Proxy: &Proxy{
+					Ip:       "",
+					Port:     "",
+					User:     "",
+					Password: "",
+				},
+				UserAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+			},
+			ExpectError: false,
+		},
+		{
+			SolvingSite:    AnticaptchaSite,
+			Name:           "Bad V2 Config - Sitekey",
+			Config:         &Config{Api_key: antiCapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJJ", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: "v2"},
+			AdditionalData: &AdditionalData{},
+			ExpectError:    true,
+		},
+		{
+			SolvingSite:    AnticaptchaSite,
+			Name:           "Bad V2 Config - URL",
+			AdditionalData: &AdditionalData{},
+			Config:         &Config{Api_key: antiCapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", CaptchaURL: "", CaptchaType: "v2"},
+			ExpectError:    true,
+		},
+	}
+
+	for _, c := range configs {
+		t.Run(c.Name, func(t *testing.T) {
+			a := &Anticaptcha{c.Config}
+			_, err := a.getCaptchaAnswer(c.AdditionalData)
+			if err != nil && !c.ExpectError {
+				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
+			}
+		})
+	}
+}
+
 // TestGetAnticapV3 tests that it can successfully get a V2 token from anticaptcha
 // to run this specific test:
 // go test -v -run ^TestGetAnticapV3$ github.com/Matthew17-21/Captcha-Tools/captchatools-go

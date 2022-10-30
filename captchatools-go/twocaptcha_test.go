@@ -1,6 +1,7 @@
 package captchatoolsgo
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -167,10 +168,14 @@ func Test2CaptchaGetImage(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Twocaptcha{c.Config}
-			_, err := a.getCaptchaAnswer(&AdditionalData{B64Img: c.Image})
+			answer, err := a.getCaptchaAnswer(&AdditionalData{B64Img: c.Image})
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
+			if answer.Token != "446437676211" {
+				t.Fatalf(`getCaptchaAnswer() Got: %v , wanted: %v`, answer.Token, "446437676211")
+			}
+			fmt.Println()
 		})
 	}
 }

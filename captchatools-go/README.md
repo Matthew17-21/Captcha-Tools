@@ -75,7 +75,7 @@ func main() {
 ### NewHarvester() Parameters:
 | Parameter | Required |  Type  |  Description|
 | :-------------: |:-------------:| :-----:| :-----:|
-| solving_site | true | int|  The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
+| solving_site | true | int (iota)|  The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
 | Config| true | captchatools.Config |  Configurations for the captchas you are solving. |
 ### Config struct fields:
 | Field | Required |  Type  |  Description|
@@ -262,11 +262,11 @@ func addtional_data() {
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 
 ### Site-Specific Support:
-| Site            | Captcha Types  Supported    |  Task Types Supported|
-| :-------------: |:-------------:| :-----:|
-| Capmonster      | Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | ImageToTextTask,<br/>NoCaptchaTask,<br/> NoCaptchaTaskProxyless,<br/> RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
-| Anticaptcha     | Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    ImageToTextTask,<br/> RecaptchaV2Task<br/>  RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
-| 2Captcha        | Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
+| Site            | Site ID |Captcha Types  Supported    |  Task Types Supported|
+| :-------------: |:-------------:| :-----:| :-----:|
+| Capmonster      | captchatools.CapmonsterSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | ImageToTextTask,<br/>NoCaptchaTask,<br/> NoCaptchaTaskProxyless,<br/> RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
+| Anticaptcha     | captchatools.AnticaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    ImageToTextTask,<br/> RecaptchaV2Task<br/>  RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
+| 2Captcha        | captchatools.TwoCaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
 
 # Captchas Types
 | Captcha Type           | Represents|

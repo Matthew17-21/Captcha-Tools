@@ -91,6 +91,7 @@ type (
 			IsInvisible bool        `json:"isInvisible,omitempty"`
 			MinScore    float32     `json:"minScore,omitempty"`
 			PageAction  string      `json:"pageAction,omitempty"`
+			Body        string      `json:"body,omitempty"`
 		} `json:"task"`
 	}
 	capmonsterCapAnswerPayload struct {
@@ -111,6 +112,7 @@ type (
 		ErrorID   int    `json:"errorId"`
 		ErrorCode string `json:"errorCode"`
 		Solution  struct {
+			Text               string `json:"text"`
 			GRecaptchaResponse string `json:"gRecaptchaResponse"`
 		} `json:"solution"`
 		Status string `json:"status"`

@@ -11,17 +11,17 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
-func (a Anticaptcha) GetToken() (*CaptchaAnswer, error) {
-	return a.getCaptchaAnswer()
+func (a Anticaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return a.getCaptchaAnswer(additional...)
 }
 func (a Anticaptcha) GetBalance() (float32, error) {
 	return a.getBalance()
 }
 
 // Method to get Queue ID from the API.
-func (a Anticaptcha) getID() (int, error) {
+func (a Anticaptcha) getID(data *AdditionalData) (int, error) {
 	// Get Payload
-	payload, err := a.createPayload()
+	payload, err := a.createPayload(data)
 	if err != nil {
 		return 0, err
 	}
@@ -48,9 +48,14 @@ func (a Anticaptcha) getID() (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (a Anticaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
+func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	var data *AdditionalData = nil
+	if len(additional) > 0 {
+		data = additional[0]
+	}
+
 	// Get Queue ID
-	queueID, err := a.getID()
+	queueID, err := a.getID(data)
 	if err != nil {
 		return nil, err
 	}
@@ -84,9 +89,13 @@ func (a Anticaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 			continue
 		}
 
+		solution := response.Solution.GRecaptchaResponse
+		if a.config.CaptchaType == ImageCaptcha {
+			solution = response.Solution.Text
+		}
 		return newCaptchaAnswer(
 			queueID,
-			response.Solution.GRecaptchaResponse,
+			solution,
 			a.config.Api_key,
 			a.config.CaptchaType,
 			AnticaptchaSite,
@@ -125,7 +134,7 @@ createPayload returns the payloads required to interact with the API.
 Possible errors that can be returned:
 1) ErrIncorrectCapType
 */
-func (a Anticaptcha) createPayload() (string, error) {
+func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 	// Define the payload we are going to send to the API
 	payload := capmonsterIDPayload{
 		ClientKey: a.config.Api_key,
@@ -136,6 +145,7 @@ func (a Anticaptcha) createPayload() (string, error) {
 			IsInvisible bool        "json:\"isInvisible,omitempty\""
 			MinScore    float32     "json:\"minScore,omitempty\""
 			PageAction  string      "json:\"pageAction,omitempty\""
+			Body        string      "json:\"body,omitempty\""
 		}{
 			WebsiteURL: a.config.CaptchaURL,
 			WebsiteKey: a.config.Sitekey,
@@ -148,6 +158,13 @@ func (a Anticaptcha) createPayload() (string, error) {
 		payload.SoftID = a.config.SoftID
 	}
 	switch a.config.CaptchaType {
+	case ImageCaptcha:
+		if data == nil {
+			return "", ErrAddionalDataMissing
+		}
+		payload.Task.Type = "ImageToTextTask"
+		payload.Task.Body = data.B64Img
+
 	case V2Captcha:
 		payload.Task.Type = "NoCaptchaTaskProxyless"
 		if a.config.IsInvisibleCaptcha {

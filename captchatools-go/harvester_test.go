@@ -8,11 +8,12 @@ import (
 )
 
 type testConfigs struct {
-	Name        string
-	Config      *Config
-	SolvingSite site
-	ExpectError bool
-	Image       string
+	Name           string
+	Config         *Config
+	SolvingSite    site
+	ExpectError    bool
+	Image          string
+	AdditionalData *AdditionalData
 }
 
 var configs = []testConfigs{

@@ -179,6 +179,11 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 	}
 
 	// Check for any additional data about the task
+	if data != nil && t.config.CaptchaType != ImageCaptcha {
+		if data.UserAgent != "" {
+			payload.UserAgent = data.UserAgent
+		}
+	}
 
 	encoded, _ := json.Marshal(payload)
 	return string(encoded), nil

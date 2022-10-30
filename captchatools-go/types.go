@@ -135,7 +135,8 @@ type (
 		Action    string  `json:"action,omitempty"`
 		MinScore  float32 `json:"min_score,omitempty"`
 		SoftID    int     `json:"soft_id,omitempty"`
-		Body      string  `json:"body,omitempty"` // Base64-encoded captcha image
+		Body      string  `json:"body,omitempty"`      // Base64-encoded captcha image
+		UserAgent string  `json:"userAgent,omitempty"` // userAgent that will be used to solve the captcha
 	}
 	twocaptchaResponse struct {
 		Status  int    `json:"status"`

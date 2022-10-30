@@ -59,7 +59,7 @@ func errCodeToError(id string) error {
 		err = ErrCaptchaData
 	case "ERROR_ZERO_BALANCE":
 		err = ErrNoBalance
-	case "ERROR_RECAPTCHA_INVALID_SITEKEY", "ERROR_GOOGLEKEY", "ERROR_SITEKEY":
+	case "ERROR_RECAPTCHA_INVALID_SITEKEY", "ERROR_GOOGLEKEY", "ERROR_SITEKEY", "ERROR_WRONG_GOOGLEKEY":
 		err = ErrWrongSitekey
 	case "ERROR_KEY_DOES_NOT_EXIST", "ERROR_WRONG_USER_KEY":
 		err = ErrWrongAPIKey

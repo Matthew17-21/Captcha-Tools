@@ -76,7 +76,6 @@ func (t Twocaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 
-		fmt.Println(string(body))
 		// Check for any errors
 		if response.Status == 0 && response.Request != "CAPCHA_NOT_READY" {
 			return nil, errCodeToError(response.Request)
@@ -167,4 +166,44 @@ func (t Twocaptcha) createPayload() (string, error) {
 	}
 	encoded, _ := json.Marshal(payload)
 	return string(encoded), nil
+}
+
+func report_2captcha(was_correct bool, c *CaptchaAnswer) error {
+	var action string = "reportgood"
+	if !was_correct {
+		action = "reportbad"
+	}
+
+	url := fmt.Sprintf(
+		"http://2captcha.com/res.php?key=%v&action=%v&id=%v&json=1",
+		c.api_key,
+		action,
+		c.id,
+	)
+	response := &twocaptchaResponse{}
+
+	// Make request
+	for i := 0; i < 100; i++ {
+		resp, err := http.Get(url)
+		if err != nil {
+			time.Sleep(1 * time.Second)
+			continue
+		}
+
+		// Parse Response
+		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		json.Unmarshal(body, response)
+
+		// Check for any errors
+		if response.Status == 0 {
+			return errCodeToError(response.Request)
+		}
+		if response.Status == 1 && response.Request != "OK_REPORT_RECORDED" {
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		return nil
+	}
+	return ErrMaxAttempts
 }

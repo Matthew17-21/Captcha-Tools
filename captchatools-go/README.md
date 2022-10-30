@@ -32,7 +32,7 @@ go get -u github.com/Matthew17-21/Captcha-Tools/captchatools-go
 ```
 
 # How to use
-##### Example - V2 Captcha / Basic usage
+### Example - V2 Captcha / Basic usage
 ```go
 package main
 
@@ -72,7 +72,7 @@ func main() {
 }
 
 ```
-##### Example - V3 Captcha
+### Example - V3 Captcha
 ```go
 func v3Example() {
 	solver, err := captchatools.NewHarvester(captchatools.AnticaptchaSite, &captchatools.Config{
@@ -105,7 +105,7 @@ func v3Example() {
 }
 
 ```
-##### Example - Image captcha
+### Example - Image captcha
 ```go
 package main
 
@@ -145,7 +145,7 @@ func image_captcha() {
 }
 
 ```
-##### Example - Additional captcha data
+### Example - Additional captcha data
 ```go
 package main
 
@@ -226,7 +226,7 @@ func addtional_data() {
 - **[2Captcha](https://www.2captcha.com/)**
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 
-##### Site-Specific Support:
+### Site-Specific Support:
 | Site            | Captcha Types  Supported    |  Task Types Supported|
 | :-------------: |:-------------:| :-----:|
 | Capmonster      | Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | ImageToTextTask,<br/>NoCaptchaTask,<br/> NoCaptchaTaskProxyless,<br/> RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |

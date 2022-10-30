@@ -143,6 +143,15 @@ func Test2CaptchaGetV2Additional(t *testing.T) {
 			ExpectError: false,
 		},
 		{
+			SolvingSite: TwoCaptchaSite,
+			Name:        "Working V2 Config with proxy",
+			Config:      &Config{Api_key: twocapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: "v2"},
+			AdditionalData: &AdditionalData{
+				Proxy: &Proxy{},
+			},
+			ExpectError: false,
+		},
+		{
 			SolvingSite:    TwoCaptchaSite,
 			Name:           "Bad V2 Config - Sitekey",
 			Config:         &Config{Api_key: twocapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJJ", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: "v2"},

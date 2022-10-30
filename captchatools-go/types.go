@@ -52,7 +52,7 @@ type (
 
 	AdditionalData struct {
 		B64Img    string // base64 encoded image
-		Proxy     string // A proxy in correct formatting - such as user:pass@ip:port
+		Proxy     *Proxy // A proxy in correct formatting - such as user:pass@ip:port
 		ProxyType string // Type of your proxy: HTTP, HTTPS, SOCKS4, SOCKS5
 		UserAgent string // UserAgent that will be passed to the service and used to solve the captcha
 	}
@@ -63,6 +63,13 @@ type (
 		api_key      string      // api key to the solving site
 		solving_site site        // site used to get the captcha answer
 		capType      captchaType // type of the captcha
+	}
+
+	Proxy struct {
+		Ip       string
+		Port     string
+		User     string
+		Password string
 	}
 
 	Anticaptcha struct {
@@ -137,6 +144,8 @@ type (
 		SoftID    int     `json:"soft_id,omitempty"`
 		Body      string  `json:"body,omitempty"`      // Base64-encoded captcha image
 		UserAgent string  `json:"userAgent,omitempty"` // userAgent that will be used to solve the captcha
+		Proxy     string  `json:"proxy,omitempty"`     // Proxy to use to solve captchas from
+		ProxyType string  `json:"proxytype,omitempty"` // Type of the proxy
 	}
 	twocaptchaResponse struct {
 		Status  int    `json:"status"`

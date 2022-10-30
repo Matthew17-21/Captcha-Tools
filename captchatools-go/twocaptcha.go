@@ -183,6 +183,12 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 		if data.UserAgent != "" {
 			payload.UserAgent = data.UserAgent
 		}
+		if data.Proxy != nil {
+			payload.Proxy = data.Proxy.StringFormatted()
+		}
+		if data.ProxyType != "" {
+			payload.ProxyType = data.ProxyType
+		}
 	}
 
 	encoded, _ := json.Marshal(payload)

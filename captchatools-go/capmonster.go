@@ -13,17 +13,17 @@ import (
    This file will contain the code to interact with capmonster.cloud API
 */
 
-func (c Capmonster) GetToken() (*CaptchaAnswer, error) {
-	return c.getCaptchaAnswer()
+func (c Capmonster) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return c.getCaptchaAnswer(additional...)
 }
 func (c Capmonster) GetBalance() (float32, error) {
 	return c.getBalance()
 }
 
 // Method to get Queue ID from the API.
-func (c Capmonster) getID() (int, error) {
+func (c Capmonster) getID(data *AdditionalData) (int, error) {
 	// Get Payload
-	payload, err := c.createPayload()
+	payload, err := c.createPayload(data)
 	if err != nil {
 		return 0, err
 	}
@@ -50,9 +50,14 @@ func (c Capmonster) getID() (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (c Capmonster) getCaptchaAnswer() (*CaptchaAnswer, error) {
+func (c Capmonster) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	var data *AdditionalData = nil
+	if len(additional) > 0 {
+		data = additional[0]
+	}
+
 	// Get Queue ID
-	queueID, err := c.getID()
+	queueID, err := c.getID(data)
 	if err != nil {
 		return nil, err
 	}
@@ -85,9 +90,14 @@ func (c Capmonster) getCaptchaAnswer() (*CaptchaAnswer, error) {
 			time.Sleep(3 * time.Second)
 			continue
 		}
+
+		solution := response.Solution.GRecaptchaResponse
+		if c.config.CaptchaType == ImageCaptcha {
+			solution = response.Solution.Text
+		}
 		return newCaptchaAnswer(
 			queueID,
-			response.Solution.GRecaptchaResponse,
+			solution,
 			c.config.Api_key,
 			c.config.CaptchaType,
 			AnticaptchaSite,
@@ -127,7 +137,7 @@ createPayload returns the payloads required to interact with the API.
 Possible errors that can be returned:
 1) ErrIncorrectCapType
 */
-func (c Capmonster) createPayload() (string, error) {
+func (c Capmonster) createPayload(data *AdditionalData) (string, error) {
 	// Define the payload we are going to send to the API
 	payload := capmonsterIDPayload{
 		ClientKey: c.config.Api_key,
@@ -138,6 +148,7 @@ func (c Capmonster) createPayload() (string, error) {
 			IsInvisible bool        "json:\"isInvisible,omitempty\""
 			MinScore    float32     "json:\"minScore,omitempty\""
 			PageAction  string      "json:\"pageAction,omitempty\""
+			Body        string      "json:\"body,omitempty\""
 		}{
 			WebsiteURL: c.config.CaptchaURL,
 			WebsiteKey: c.config.Sitekey,
@@ -147,6 +158,12 @@ func (c Capmonster) createPayload() (string, error) {
 
 	// Add any other keys to the payload
 	switch c.config.CaptchaType {
+	case ImageCaptcha:
+		if data == nil {
+			return "", ErrAddionalDataMissing
+		}
+		payload.Task.Type = "ImageToTextTask"
+		payload.Task.Body = data.B64Img
 	case V2Captcha:
 		payload.Task.Type = "NoCaptchaTaskProxyless"
 		if c.config.IsInvisibleCaptcha {

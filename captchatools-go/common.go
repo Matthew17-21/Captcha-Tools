@@ -93,12 +93,17 @@ func NewProxy(proxy string) (*Proxy, error) {
 	return p, nil
 }
 
+// IsUserAuth returns if a proxy is user authenticated
+func (p Proxy) IsUserAuth() bool {
+	return p.User != "" && p.Password != ""
+}
+
 // Returns the proxy as a string, unformatted
 //
 // Example: would return "ip:port" || "ip:port:user:pass"
 func (p Proxy) String() string {
 	var formatted string = p.Ip + ":" + p.Port
-	if p.User != "" && p.Password != "" {
+	if p.IsUserAuth() {
 		formatted = formatted + ":" + p.User + ":" + p.Password
 	}
 	return formatted
@@ -109,7 +114,7 @@ func (p Proxy) String() string {
 // Example: returns "user:pass@ip:port" || "ip:port"
 func (p Proxy) StringFormatted() string {
 	var formatted string = p.Ip + ":" + p.Port
-	if p.User != "" && p.Password != "" {
+	if p.IsUserAuth() {
 		formatted = fmt.Sprintf("%v:%v@%v", p.User, p.Password, formatted)
 	}
 	return formatted

@@ -8,9 +8,10 @@ const (
 )
 
 const (
-	V2Captcha captchaType = "v2"
-	V3Captcha captchaType = "v3"
-	HCaptcha  captchaType = "hcaptcha"
+	V2Captcha    captchaType = "v2"
+	V3Captcha    captchaType = "v3"
+	HCaptcha     captchaType = "hcaptcha"
+	ImageCaptcha captchaType = "image"
 )
 
 type (
@@ -45,8 +46,15 @@ type (
 	// Interface that will allow us to interact with the methods from the
 	// individual structs
 	Harvester interface {
-		GetToken() (*CaptchaAnswer, error) // Function to get a captcha token
+		GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) // Function to get a captcha token
 		GetBalance() (float32, error)
+	}
+
+	AdditionalData struct {
+		B64Img    string // base64 encoded image
+		Proxy     string // A proxy in correct formatting - such as user:pass@ip:port
+		ProxyType string // Type of your proxy: HTTP, HTTPS, SOCKS4, SOCKS5
+		UserAgent string // UserAgent that will be passed to the service and used to solve the captcha
 	}
 
 	CaptchaAnswer struct {
@@ -125,6 +133,7 @@ type (
 		Action    string  `json:"action,omitempty"`
 		MinScore  float32 `json:"min_score,omitempty"`
 		SoftID    int     `json:"soft_id,omitempty"`
+		Body      string  `json:"body,omitempty"` // Base64-encoded captcha image
 	}
 	twocaptchaResponse struct {
 		Status  int    `json:"status"`

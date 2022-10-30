@@ -12,6 +12,7 @@ type testConfigs struct {
 	Config      *Config
 	SolvingSite site
 	ExpectError bool
+	Image       string
 }
 
 var configs = []testConfigs{

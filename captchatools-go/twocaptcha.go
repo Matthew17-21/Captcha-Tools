@@ -13,17 +13,17 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
-func (t Twocaptcha) GetToken() (*CaptchaAnswer, error) {
-	return t.getCaptchaAnswer()
+func (t Twocaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return t.getCaptchaAnswer(additional...)
 }
 func (t Twocaptcha) GetBalance() (float32, error) {
 	return t.getBalance()
 }
 
 // Method to get Queue ID from the API.
-func (t Twocaptcha) getID() (string, error) {
+func (t Twocaptcha) getID(data *AdditionalData) (string, error) {
 	// Get Payload
-	payload, err := t.createPayload()
+	payload, err := t.createPayload(data)
 	if err != nil {
 		return "", err
 	}
@@ -50,9 +50,14 @@ func (t Twocaptcha) getID() (string, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (t Twocaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
+func (t Twocaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	var data *AdditionalData = nil
+	if len(additional) > 0 {
+		data = additional[0]
+	}
+
 	// Get Queue ID
-	queueID, err := t.getID()
+	queueID, err := t.getID(data)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +140,7 @@ createPayload returns the payloads required to interact with the API.
 Possible errors that can be returned:
 1) ErrIncorrectCapType
 */
-func (t Twocaptcha) createPayload() (string, error) {
+func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 	// Define the payload we are going to send to the API
 	payload := twoCapIDPayload{
 		Key:     t.config.Api_key,
@@ -149,6 +154,13 @@ func (t Twocaptcha) createPayload() (string, error) {
 		payload.SoftID = t.config.SoftID
 	}
 	switch t.config.CaptchaType {
+	case ImageCaptcha:
+		if data == nil {
+			return "", ErrAddionalDataMissing
+		}
+		payload.Method = "base64"
+		payload.Body = data.B64Img
+
 	case V2Captcha:
 		payload.Googlekey = t.config.Sitekey
 		if t.config.IsInvisibleCaptcha {
@@ -165,6 +177,9 @@ func (t Twocaptcha) createPayload() (string, error) {
 	default:
 		return "", ErrIncorrectCapType
 	}
+
+	// Check for any additional data about the task
+
 	encoded, _ := json.Marshal(payload)
 	return string(encoded), nil
 }

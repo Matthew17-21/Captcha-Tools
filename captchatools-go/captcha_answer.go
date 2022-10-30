@@ -1,12 +1,13 @@
 package captchatoolsgo
 
 // newCaptchaAnswer returns a new captcha answer
-func newCaptchaAnswer(id interface{}, token string, api_key string, ss site) *CaptchaAnswer {
+func newCaptchaAnswer(id interface{}, token string, api_key string, capType captchaType, ss site) *CaptchaAnswer {
 	return &CaptchaAnswer{
 		id:           id,
 		Token:        token,
 		solving_site: ss,
 		api_key:      api_key,
+		capType:      capType,
 	}
 }
 
@@ -25,6 +26,8 @@ func (c CaptchaAnswer) Report(was_correct bool) error {
 	switch c.solving_site {
 	case TwoCaptchaSite:
 		err = report_2captcha(was_correct, &c)
+	case AnticaptchaSite:
+		err = report_anticaptcha(was_correct, &c)
 	}
 	return err
 }

@@ -89,6 +89,7 @@ func (c Capmonster) getCaptchaAnswer() (*CaptchaAnswer, error) {
 			queueID,
 			response.Solution.GRecaptchaResponse,
 			c.config.Api_key,
+			c.config.CaptchaType,
 			AnticaptchaSite,
 		), nil
 	}

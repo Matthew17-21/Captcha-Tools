@@ -50,10 +50,11 @@ type (
 	}
 
 	CaptchaAnswer struct {
+		Token        string      // the actual captcha answer
 		id           interface{} // id from the solving site
 		api_key      string      // api key to the solving site
 		solving_site site        // site used to get the captcha answer
-		Token        string      // the actual captcha answer
+		capType      captchaType // type of the captcha
 	}
 
 	Anticaptcha struct {

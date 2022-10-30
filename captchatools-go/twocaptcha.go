@@ -90,6 +90,7 @@ func (t Twocaptcha) getCaptchaAnswer() (*CaptchaAnswer, error) {
 			queueID,
 			response.Request,
 			t.config.Api_key,
+			t.config.CaptchaType,
 			TwoCaptchaSite,
 		), nil
 	}

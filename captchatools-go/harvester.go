@@ -14,7 +14,7 @@ https://github.com/Matthew17-21/Captcha-Tools
 func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 	// Check for any errors
 	switch config.CaptchaType {
-	case "hcaptcha", "hcap", "v2", "v3":
+	case ImageCaptcha, V2Captcha, V3Captcha, HCaptcha:
 	default:
 		return nil, ErrIncorrectCapType
 	}

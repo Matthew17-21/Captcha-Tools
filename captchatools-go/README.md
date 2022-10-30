@@ -32,7 +32,7 @@ go get -u github.com/Matthew17-21/Captcha-Tools/captchatools-go
 ```
 
 # How to use
-### Example - V2 Captcha / Basic usage
+### Basic usage
 ```go
 package main
 
@@ -72,7 +72,71 @@ func main() {
 }
 
 ```
-### Example - V3 Captcha
+### NewHarvester() Parameters:
+| Parameter | Required |  Type  |  Description|
+| :-------------: |:-------------:| :-----:| :-----:|
+| solving_site | true | int|  The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
+| Config| true | captchatools.Config |  Configurations for the captchas you are solving. |
+### Config struct fields:
+| Field | Required |  Type  |  Description|
+| :-------------: |:-------------:|  :-----:| :-----:|
+| Api_key | true | String|  The API Key for the captcha solving site|
+| Sitekey| true | String | Sitekey from the site where captcha is loaded|
+| CaptchaURL | true| String |  URL where the captcha is located|
+| CaptchaType| true| captchaType |  Type of captcha you are solving. See [captcha types](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#Captchas-Types) |
+| Action | false | String |  Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
+| IsInvisibleCaptcha| false | bool |  If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
+| MinScore | false | float32 |  Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
+| SoftID | false | int |  2captcha Developer ID. <br /> Developers get 10% of spendings of their software users. |
+### AdditionalData struct fields:
+| Field | Required |  Type  |  Description|
+| :-------------: |:-------------:|  :-----:| :-----:|
+| B64Img | false | String |  Base64 encoded captcha image<br />__This param is only required when solving image captchas__|
+| Proxy| false | *Proxy |  Proxy to be used to solve captchas.<br />This will make the captcha be solved from the proxy ip|
+| ProxyType | false | string |  Type of the proxy being used. Options are:<br /> `HTTP`, `HTTPS`, `SOCKS4`, `SOCKS5`|
+| UserAgent | false | string |  UserAgent that will be passed to the service and used to solve the captcha |
+### Examples
+##### Example - V2 Captcha / Basic usage
+```go
+package main
+
+import (
+	"fmt"
+
+	captchatools "github.com/Matthew17-21/Captcha-Tools/captchatools-go"
+)
+
+func main() {
+	solver, err := captchatools.NewHarvester(captchatools.CapmonsterSite, &captchatools.Config{
+		Api_key:     "ENTER YOUR API KEY HERE",
+		Sitekey:     "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-",
+		CaptchaURL:  "https://www.google.com/recaptcha/api2/demo",
+		CaptchaType: captchatools.V2Captcha,
+	})
+	if err != nil {
+		...
+	}
+	answer, err := solver.GetToken()
+	if err != nil {
+		switch err {
+		case captchatools.ErrBanned:
+			...
+		case captchatools.ErrAddionalDataMissing:
+			...
+		}
+	}
+
+	fmt.Println("Captcha ID:", answer.Id())
+	fmt.Println("Captcha token:", answer.Token)
+
+	// ........Use captcha token......
+	answer.Report(true) // report good
+	// or
+	answer.Report(false) // report bad / request refund
+}
+
+```
+##### Example - V3 Captcha
 ```go
 func v3Example() {
 	solver, err := captchatools.NewHarvester(captchatools.AnticaptchaSite, &captchatools.Config{
@@ -105,7 +169,7 @@ func v3Example() {
 }
 
 ```
-### Example - Image captcha
+##### Example - Image captcha
 ```go
 package main
 
@@ -145,7 +209,7 @@ func image_captcha() {
 }
 
 ```
-### Example - Additional captcha data
+##### Example - Additional captcha data
 ```go
 package main
 
@@ -191,35 +255,6 @@ func addtional_data() {
 
 }
 ```
-
-### NewHarvester() Parameters:
-| Parameter | Required |  Type  |  Description|
-| :-------------: |:-------------:| :-----:| :-----:|
-| solving_site | true | int|  The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support). Alternatively, you can use shortcuts such as `captchatools.AnticaptchaSite` |
-| Config| true | captchatools.Config |  Configurations for the captchas you are solving. |
-
-
-### Config struct fields:
-| Field | Required |  Type  |  Description|
-| :-------------: |:-------------:|  :-----:| :-----:|
-| Api_key | true | String|  The API Key for the captcha solving site|
-| Sitekey| true | String | Sitekey from the site where captcha is loaded|
-| CaptchaURL | true| String |  URL where the captcha is located|
-| CaptchaType| true| captchaType |  Type of captcha you are solving. See [captcha types](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#Captchas-Types) |
-| Action | false | String |  Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
-| IsInvisibleCaptcha| false | bool |  If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
-| MinScore | false | float32 |  Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
-| SoftID | false | int |  2captcha Developer ID. <br /> Developers get 10% of spendings of their software users. |
-
-### AdditionalData struct fields:
-| Field | Required |  Type  |  Description|
-| :-------------: |:-------------:|  :-----:| :-----:|
-| B64Img | false | String |  Base64 encoded captcha image<br />__This param is only required when solving image captchas__|
-| Proxy| false | *Proxy |  Proxy to be used to solve captchas.<br />This will make the captcha be solved from the proxy ip|
-| ProxyType | false | string |  Type of the proxy being used. Options are:<br /> `HTTP`, `HTTPS`, `SOCKS4`, `SOCKS5`|
-| UserAgent | false | string |  UserAgent that will be passed to the service and used to solve the captcha |
-
-
 
 # Supported Sites
 - **[Capmonster](https://capmonster.cloud/)**

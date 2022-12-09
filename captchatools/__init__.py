@@ -42,9 +42,9 @@ class Harvester(ABC):
             raise Exception("No API Key!")
         if self.solving_site is None:
             raise Exception("No solving site set")
-        if self.captcha_type not in ["v2", "v3", "hcaptcha", "hcap"]:
+        if self.captcha_type not in ["v2", "v3", "hcaptcha", "hcap", "image", "normal"]:
             raise Exception("Invalid captcha type")
-        if self.soft_id is None: # Set with my own soft_id
+        if self.soft_id is None: #TODO Set with my own soft_id
             pass
     
     @abstractmethod

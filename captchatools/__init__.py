@@ -67,3 +67,7 @@ class Harvester(ABC):
 def new_harvester(**kwargs) -> Harvester:
     from .twocap import Twocap
     return Twocap(**kwargs)
+
+# Just for backward compatibility
+def captcha_harvesters(**kwargs) -> Harvester:
+    return new_harvester(**kwargs)

@@ -65,8 +65,17 @@ class Harvester(ABC):
         '''
 
 def new_harvester(**kwargs) -> Harvester:
+    # Need to import here to prevent circular imports
     from .twocap import Twocap
-    return Twocap(**kwargs)
+    from .anticaptcha import Anticaptcha
+    
+    site = kwargs.get("solving_site","").lower()
+    if site == 2 or site == "anticaptcha":
+        return Anticaptcha(**kwargs)
+    elif site == 3 or site == "2captcha":
+        return Twocap(**kwargs)
+
+
 
 # Just for backward compatibility
 def captcha_harvesters(**kwargs) -> Harvester:

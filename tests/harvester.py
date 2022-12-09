@@ -19,13 +19,6 @@ def mock_get_response(*args, **kwargs):
     if args[0] == "https://2captcha.com/res.php?key=fake_key&action=getbalance&json=1" :
         return MockResponse({"status":0,"request":"ERROR_WRONG_USER_KEY","error_text":"You've provided key parameter value in incorrect format], it should contain 32 symbols."})
 
-class TestHarvester(unittest.TestCase):
-    '''
-    This test ensures that everything initializes correctly
-    '''
-    def test_2captcha(self):
-        h = new_harvester(api_key="key_here", solving_site="2captcha")
-        self.assertTrue(isinstance(h, captchatools.Twocap), "Not type captchatools.Twocaptcha")
 
 class Test2Captcha(unittest.TestCase):
     '''
@@ -34,8 +27,8 @@ class Test2Captcha(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mock_get_response)
     def test_get_balance(self, mock_get):
         real = new_harvester(api_key="real_key", solving_site="2captcha")
-        fake = new_harvester(api_key="fake_key", solving_site="2captcha")
         self.assertEqual(real.get_balance(), 17.87942)
+        fake = new_harvester(api_key="fake_key", solving_site="2captcha")
         self.assertRaises(captchaExceptions.WrongAPIKeyException, fake.get_balance)
 
 if __name__ == "__main__":

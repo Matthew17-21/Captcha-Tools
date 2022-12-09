@@ -21,6 +21,7 @@ __author__ = "Matthew17-21"
 __license__ = "MIT"
 
 from abc import ABC, abstractmethod
+from typing import Optional
 class Harvester(ABC):
     '''
     Represents a captcha harvester.
@@ -53,7 +54,12 @@ class Harvester(ABC):
         '''
     
     @abstractmethod
-    def get_token(self):
+    def get_token(
+        self, b64_img: Optional[str]=None, 
+        user_agent: Optional[str]=None, 
+        proxy: Optional[str]=None, 
+        proxy_type: Optional[str]=None
+    ):
         '''
         Returns a captcha token
         '''

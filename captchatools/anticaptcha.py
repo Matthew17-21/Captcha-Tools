@@ -118,7 +118,7 @@ class Anticaptcha(Harvester):
             raise captchaExceptions.TaskDetails(f"Error: {error_code}")
         elif error_code == "MAX_USER_TURN" or error_code == "ERROR_NO_SLOT_AVAILABLE":
             raise captchaExceptions.NoSlotAvailable("No slot available")
-        elif error_code == "ERROR_IP_NOT_ALLOWED" or error_code == "IP_BANNED":
+        elif error_code == "ERROR_IP_NOT_ALLOWED" or error_code == "IP_BANNED" or error_code == "ERROR_IP_BLOCKED":
             return captchaExceptions.Banned(error_code)
         elif error_code == "ERROR_ZERO_CAPTCHA_FILESIZE" or error_code == "ERROR_UPLOAD" or \
             error_code == "ERROR_CAPTCHAIMAGE_BLOCKED" or error_code == "ERROR_IMAGE_TYPE_NOT_SUPPORTED" or \

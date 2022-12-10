@@ -68,13 +68,16 @@ def new_harvester(**kwargs) -> Harvester:
     # Need to import here to prevent circular imports
     from .twocap import Twocap
     from .anticaptcha import Anticaptcha
+    from .capmonster import Capmonster
     
     site = kwargs.get("solving_site","").lower()
-    if site == 2 or site == "anticaptcha":
+    if site == 1 or site == "capmonster":
+        return Capmonster(**kwargs)
+    elif site == 2 or site == "anticaptcha":
         return Anticaptcha(**kwargs)
     elif site == 3 or site == "2captcha":
         return Twocap(**kwargs)
-
+    #TODO should throw an exception here
 
 
 # Just for backward compatibility

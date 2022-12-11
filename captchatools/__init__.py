@@ -44,8 +44,9 @@ class Harvester(ABC):
             raise Exception("No solving site set")
         if self.captcha_type not in ["v2", "v3", "hcaptcha", "hcap", "image", "normal"]:
             raise Exception("Invalid captcha type")
-        if self.soft_id is None: #TODO Set with my own soft_id
-            pass
+        if self.soft_id is None:
+            if self.solving_site == 3 or self.solving_site == "2captcha":
+                self.soft_id = 4782723
     
     @abstractmethod
     def get_balance(self) -> float:

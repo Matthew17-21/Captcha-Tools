@@ -23,7 +23,7 @@ class Capmonster(Harvester):
             except requests.RequestException:
                 pass
 
-    def get_token(self, b64_img: Optional[str] = None, user_agent: Optional[str] = None, proxy: Optional[str] = None, proxy_type: Optional[str] = None):
+    def get_token(self, b64_img: Optional[str] = None, user_agent: Optional[str] = None, proxy: Optional[str] = None, proxy_type: Optional[str] = "HTTP"):
         # Get ID
         task_id = self.__get_id(
             b64_img=b64_img,
@@ -70,7 +70,10 @@ class Capmonster(Harvester):
         if kwargs.get("proxy", None) is not None:
             splitted = kwargs.get("proxy").split(":")
             payload["task"]["proxyAddress"] = splitted[0]
-            payload["task"]["proxyPort"] = splitted[1]
+            try:
+                payload["task"]["proxyPort"] = int(splitted[1])
+            except Exception:
+                payload["task"]["proxyPort"] = splitted[1]
             if len(splitted) >=4:
                 payload["task"]["proxyLogin"] = splitted[2]
                 payload["task"]["proxyPassword"] = splitted[3]
@@ -86,7 +89,7 @@ class Capmonster(Harvester):
         # Get token & return it
         for _ in range(50):
             try:
-                resp = requests.post(BASEURL + "/createTask " , json=payload, timeout=20).json()
+                resp = requests.post(BASEURL + "/createTask" , json=payload, timeout=20).json()
                 if resp["errorId"] != 0: # Means there was an error:
                     self.check_error(resp["errorCode"])
                 return resp["taskId"]
@@ -99,7 +102,7 @@ class Capmonster(Harvester):
             try:
                 response = requests.post(BASEURL + "/getTaskResult",json=payload,timeout=20,).json()
                 if response["errorId"] != 0: # Means there was an error
-                    self.check_error(response["errorId"])
+                    self.check_error(response["errorCode"])
                 if response["status"] == "processing":
                     time.sleep(3)
                     continue
@@ -130,4 +133,4 @@ class Capmonster(Harvester):
             error_code == "ERROR_CAPTCHAIMAGE_BLOCKED" or error_code == "ERROR_IMAGE_TYPE_NOT_SUPPORTED" or \
             error_code == "ERROR_WRONG_FILE_EXTENSION":
             raise captchaExceptions.CaptchaImageError(error_code)
-        else: raise Exception(f"Error returned from 2captcha: {error_code}")
+        else: raise Exception(f"Error returned from anticaptcha: {error_code}")

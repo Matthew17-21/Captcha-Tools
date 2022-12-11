@@ -60,3 +60,8 @@ class CaptchaImageError(Exception):
     '''
     This exception gets thrown when there is an error with the captcha image
     '''
+
+class UnknownError(Exception):
+    '''
+    This exceptions gets thrown when there is an unknown error
+    '''

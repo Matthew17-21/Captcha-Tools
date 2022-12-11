@@ -114,4 +114,4 @@ class Twocap(Harvester):
             error_code == "ERROR_CAPTCHAIMAGE_BLOCKED" or error_code == "ERROR_IMAGE_TYPE_NOT_SUPPORTED" or \
             error_code == "ERROR_WRONG_FILE_EXTENSION":
             raise captchaExceptions.CaptchaImageError(error_code)
-        else: raise Exception(f"Error returned from 2captcha: {error_code}")
+        else: raise captchaExceptions.UnknownError(f"Error returned from 2captcha: {error_code}")

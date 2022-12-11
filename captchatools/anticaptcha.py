@@ -18,7 +18,7 @@ class Anticaptcha(Harvester):
             except requests.RequestException:
                 pass
 
-    def get_token(self, b64_img: Optional[str] = None, user_agent: Optional[str] = None, proxy: Optional[str] = None, proxy_type: Optional[str] = None):
+    def get_token(self, b64_img: Optional[str] = None, user_agent: Optional[str] = None, proxy: Optional[str] = None, proxy_type: Optional[str] = "HTTP"):
         # Get ID
         task_id = self.__get_id(
             b64_img=b64_img,
@@ -64,8 +64,12 @@ class Anticaptcha(Harvester):
             payload["softId"] = self.soft_id
         if kwargs.get("proxy", None) is not None:
             splitted = kwargs.get("proxy").split(":")
+            payload["task"]["proxyType"] = kwargs.get('proxy_type',"HTTP")
             payload["task"]["proxyAddress"] = splitted[0]
-            payload["task"]["proxyPort"] = splitted[1]
+            try:
+                payload["task"]["proxyPort"] = int(splitted[1])
+            except Exception:
+                payload["task"]["proxyPort"] = splitted[1]
             if len(splitted) >=4:
                 payload["task"]["proxyLogin"] = splitted[2]
                 payload["task"]["proxyPassword"] = splitted[3]

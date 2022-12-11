@@ -22,6 +22,7 @@ __license__ = "MIT"
 
 from abc import ABC, abstractmethod
 from typing import Optional
+from . import exceptions as captchaExceptions
 class Harvester(ABC):
     '''
     Represents a captcha harvester.
@@ -39,11 +40,11 @@ class Harvester(ABC):
 
         # Validate Data
         if self.api_key is None:
-            raise Exception("No API Key!")
+            raise captchaExceptions.WrongAPIKeyException()
         if self.solving_site is None:
-            raise Exception("No solving site set")
+            raise captchaExceptions.NoHarvesterException("No solving site selected")
         if self.captcha_type not in ["v2", "v3", "hcaptcha", "hcap", "image", "normal"]:
-            raise Exception("Invalid captcha type")
+            raise captchaExceptions.NoCaptchaType("Invalid captcha type")
         if self.soft_id is None:
             if self.solving_site == 3 or self.solving_site == "2captcha":
                 self.soft_id = 4782723
@@ -78,7 +79,7 @@ def new_harvester(**kwargs) -> Harvester:
         return Anticaptcha(**kwargs)
     elif site == 3 or site == "2captcha":
         return Twocap(**kwargs)
-    #TODO should throw an exception here
+    raise captchaExceptions.NoHarvesterException("No solving site selected")
 
 
 # Just for backward compatibility

@@ -25,8 +25,6 @@ class NoHarvesterException(Exception):
     '''
     This exception gets thrown when a user doesn't properly set a harvester.
     '''
-    def __init__(self, message="[captchatools] No captcha harvester selected"):
-        super(NoHarvesterException, self).__init__(message)
 
 class CaptchaIMGTooBig(Exception):
     '''
@@ -64,4 +62,9 @@ class CaptchaImageError(Exception):
 class UnknownError(Exception):
     '''
     This exceptions gets thrown when there is an unknown error
+    '''
+
+class NoCaptchaType(Exception):
+    '''
+    This exception gets thrown when no captcha type was set
     '''

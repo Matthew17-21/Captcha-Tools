@@ -13,6 +13,35 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
+type Twocaptcha struct {
+	config *Config
+}
+
+// Type that will be used when sending a payload to 2captcha
+type twoCapIDPayload struct {
+	Key       string  `json:"key"`
+	Method    string  `json:"method"`
+	Googlekey string  `json:"googlekey"`
+	Pageurl   string  `json:"pageurl"`
+	JSON      int     `json:"json"`
+	Sitekey   string  `json:"sitekey,omitempty"`
+	Invisible int     `json:"invisible,omitempty"`
+	Version   string  `json:"version,omitempty"`
+	Action    string  `json:"action,omitempty"`
+	MinScore  float32 `json:"min_score,omitempty"`
+	SoftID    int     `json:"soft_id,omitempty"`
+	Body      string  `json:"body,omitempty"`      // Base64-encoded captcha image
+	UserAgent string  `json:"userAgent,omitempty"` // userAgent that will be used to solve the captcha
+	Proxy     string  `json:"proxy,omitempty"`     // Proxy to use to solve captchas from
+	ProxyType string  `json:"proxytype,omitempty"` // Type of the proxy
+}
+
+// Type that will be used when getting a response from 2captcha
+type twocaptchaResponse struct {
+	Status  int    `json:"status"`
+	Request string `json:"request"`
+}
+
 func (t Twocaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	return t.getCaptchaAnswer(additional...)
 }

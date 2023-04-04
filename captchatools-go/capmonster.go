@@ -15,6 +15,56 @@ import (
    This file will contain the code to interact with capmonster.cloud API
 */
 
+type Capmonster struct {
+	config *Config
+}
+
+// This struct will be the payload to get the queue ID from capmonster
+type capmonsterIDPayload struct {
+	ClientKey string `json:"clientKey"`
+	SoftID    int    `json:"softId,omitempty"`
+	Task      struct {
+		WebsiteURL    string      `json:"websiteURL"`
+		WebsiteKey    string      `json:"websiteKey"`
+		Type          captchaType `json:"type"`
+		IsInvisible   bool        `json:"isInvisible,omitempty"`
+		MinScore      float32     `json:"minScore,omitempty"`
+		PageAction    string      `json:"pageAction,omitempty"`
+		Body          string      `json:"body,omitempty"`
+		ProxyType     string      `json:"proxyType,omitempty"`
+		ProxyAddress  string      `json:"proxyAddress,omitempty"`
+		ProxyPort     int         `json:"proxyPort,omitempty"`
+		ProxyLogin    string      `json:"proxyLogin,omitempty"`
+		ProxyPassword string      `json:"proxyPassword,omitempty"`
+		UserAgent     string      `json:"userAgent,omitempty"`
+	} `json:"task"`
+}
+type capmonsterCapAnswerPayload struct {
+	ClientKey string `json:"clientKey"`
+	TaskID    int    `json:"taskId"`
+}
+
+type capmonsterIDResponse struct {
+	ErrorID   int    `json:"errorId"`
+	ErrorCode string `json:"errorCode"`
+	TaskID    int    `json:"taskId"`
+}
+
+type capmonsterTokenResponse struct {
+	ErrorID   int    `json:"errorId"`
+	ErrorCode string `json:"errorCode"`
+	Solution  struct {
+		Text               string `json:"text"`
+		GRecaptchaResponse string `json:"gRecaptchaResponse"`
+	} `json:"solution"`
+	Status string `json:"status"`
+}
+type capmonsterBalanceResponse struct {
+	Balance   float32 `json:"balance"`
+	ErrorCode string  `json:"errorCode"`
+	ErrorID   int     `json:"errorId"`
+}
+
 func (c Capmonster) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	return c.getCaptchaAnswer(additional...)
 }

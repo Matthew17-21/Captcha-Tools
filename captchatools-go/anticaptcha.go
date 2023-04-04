@@ -13,6 +13,17 @@ import (
 
 // This file will contain the code to interact with anticaptcha.com API
 
+type Anticaptcha struct {
+	config *Config
+}
+
+type anticaptchaBalanceResponse struct {
+	ErrorID          int     `json:"errorId"`
+	ErrorCode        string  `json:"errorCode"`
+	ErrorDescription string  `json:"errorDescription"`
+	Balance          float32 `json:"balance"`
+}
+
 func (a Anticaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	return a.getCaptchaAnswer(additional...)
 }

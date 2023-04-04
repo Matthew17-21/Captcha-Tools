@@ -54,8 +54,10 @@ type capmonsterTokenResponse struct {
 	ErrorID   int    `json:"errorId"`
 	ErrorCode string `json:"errorCode"`
 	Solution  struct {
+		Token              string `json:"token"`
 		Text               string `json:"text"`
 		GRecaptchaResponse string `json:"gRecaptchaResponse"`
+		UserAgent          string `json:"userAgent"`
 	} `json:"solution"`
 	Status string `json:"status"`
 }
@@ -143,10 +145,16 @@ func (c Capmonster) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAns
 			continue
 		}
 
-		solution := response.Solution.GRecaptchaResponse
-		if c.config.CaptchaType == ImageCaptcha {
+		var solution string
+		switch c.config.CaptchaType {
+		case V2Captcha, V3Captcha:
+			solution = response.Solution.GRecaptchaResponse
+		case ImageCaptcha:
 			solution = response.Solution.Text
+		case CFTurnstile:
+			solution = response.Solution.Token
 		}
+
 		return newCaptchaAnswer(
 			queueID,
 			solution,
@@ -253,6 +261,8 @@ func (c Capmonster) createPayload(data *AdditionalData) (string, error) {
 		payload.Task.PageAction = c.config.Action
 	case HCaptcha:
 		payload.Task.Type = "HCaptchaTaskProxyless"
+	case CFTurnstile:
+		payload.Task.Type = "TurnstileTaskProxyless"
 	default:
 		return "", ErrIncorrectCapType
 	}

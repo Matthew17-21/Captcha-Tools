@@ -203,6 +203,9 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 	case HCaptcha:
 		payload.Method = "hcaptcha"
 		payload.Sitekey = t.config.Sitekey
+	case CFTurnstile:
+		payload.Method = "turnstile"
+		payload.Sitekey = t.config.Sitekey
 	default:
 		return "", ErrIncorrectCapType
 	}

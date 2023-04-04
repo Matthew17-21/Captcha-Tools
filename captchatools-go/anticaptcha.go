@@ -24,6 +24,18 @@ type anticaptchaBalanceResponse struct {
 	Balance          float32 `json:"balance"`
 }
 
+type anticaptchaResponse struct {
+	ErrorID   int    `json:"errorId"`
+	ErrorCode string `json:"errorCode"`
+	Status    string `json:"status"`
+	Solution  struct {
+		Token              string `json:"token"`
+		Text               string `json:"text"`
+		GRecaptchaResponse string `json:"gRecaptchaResponse"`
+		UserAgent          string `json:"userAgent"`
+	} `json:"solution"`
+}
+
 func (a Anticaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	return a.getCaptchaAnswer(additional...)
 }
@@ -78,7 +90,7 @@ func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAn
 		ClientKey: a.config.Api_key,
 		TaskID:    queueID,
 	})
-	response := &capmonsterTokenResponse{}
+	response := &anticaptchaResponse{}
 	for i := 0; i < 100; i++ {
 		resp, err := http.Post("https://api.anti-captcha.com/getTaskResult", "application/json", bytes.NewBuffer([]byte(payload)))
 		if err != nil {
@@ -102,10 +114,16 @@ func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAn
 			continue
 		}
 
-		solution := response.Solution.GRecaptchaResponse
-		if a.config.CaptchaType == ImageCaptcha {
+		var solution string
+		switch a.config.CaptchaType {
+		case V2Captcha, V3Captcha:
+			solution = response.Solution.GRecaptchaResponse
+		case ImageCaptcha:
 			solution = response.Solution.Text
+		case CFTurnstile:
+			solution = response.Solution.Token
 		}
+
 		return newCaptchaAnswer(
 			queueID,
 			solution,
@@ -219,6 +237,8 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 		payload.Task.PageAction = a.config.Action
 	case HCaptcha:
 		payload.Task.Type = "HCaptchaTaskProxyless"
+	case CFTurnstile:
+		payload.Task.Type = "TurnstileTaskProxyless"
 	default:
 		return "", ErrIncorrectCapType
 	}

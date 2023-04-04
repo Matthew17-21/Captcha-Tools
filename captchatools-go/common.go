@@ -12,6 +12,7 @@ const (
 	V3Captcha    captchaType = "v3"
 	HCaptcha     captchaType = "hcaptcha"
 	ImageCaptcha captchaType = "image"
+	CFTurnstile  captchaType = "cfturnstile"
 )
 
 type (

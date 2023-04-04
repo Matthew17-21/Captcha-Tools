@@ -54,7 +54,7 @@ type Config struct {
 func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 	// Check for any errors
 	switch config.CaptchaType {
-	case ImageCaptcha, V2Captcha, V3Captcha, HCaptcha:
+	case ImageCaptcha, V2Captcha, V3Captcha, HCaptcha, CFTurnstile:
 	default:
 		return nil, ErrIncorrectCapType
 	}

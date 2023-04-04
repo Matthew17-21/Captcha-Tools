@@ -262,19 +262,16 @@ func addtional_data() {
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 
 ### Site-Specific Support:
-| Site            | Site ID |Captcha Types  Supported    |  Task Types Supported|
-| :-------------: |:-------------:| :-----:| :-----:|
-| Capmonster      | captchatools.CapmonsterSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | ImageToTextTask,<br/>NoCaptchaTask,<br/> NoCaptchaTaskProxyless,<br/> RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
-| Anticaptcha     | captchatools.AnticaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    ImageToTextTask,<br/> RecaptchaV2Task<br/>  RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
-| 2Captcha        | captchatools.TwoCaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
-
-# Captchas Types
-| Captcha Type           | Represents|
-| :-------------: | :-----:|
-| captchatools.ImageCaptcha | Image captcha |
-| captchatools.V2Captcha | Recaptcha V2 captcha |
-| captchatools.V3Captcha | Recaptcha V3 captcha |
-| captchatools.HCaptcha | HCaptcha |
+| Captcha Type            |2Captcha    | Anticaptcha | Capmonster| 
+| :-------------: |:-------------:| :-----:| :-----:| 
+| Recaptcha V2 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Recaptcha V3 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Hcaptcha | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Image Captcha | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Cloudflare Turnstile | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Funcaptcha |:x: | :x: | :x: |
+| GeeTest |:x: | :x: | :x: |
+| Amazon WAF |:x: | :x: | :x: |
 
 
 

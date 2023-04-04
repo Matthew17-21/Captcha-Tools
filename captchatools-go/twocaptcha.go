@@ -126,6 +126,7 @@ func (t Twocaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAns
 			t.config.Api_key,
 			t.config.CaptchaType,
 			TwoCaptchaSite,
+			"",
 		), nil
 	}
 	return nil, ErrMaxAttempts

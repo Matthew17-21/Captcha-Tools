@@ -2,6 +2,7 @@ package captchatoolsgo
 
 type CaptchaAnswer struct {
 	Token        string      // the actual captcha answer
+	UserAgent    string      // The user agent that was used to solve the captcha answer. Can be an empty string if the service doesn't return anything
 	id           interface{} // id from the solving site
 	api_key      string      // api key to the solving site
 	solving_site site        // site used to get the captcha answer
@@ -9,13 +10,14 @@ type CaptchaAnswer struct {
 }
 
 // newCaptchaAnswer returns a new captcha answer
-func newCaptchaAnswer(id interface{}, token string, api_key string, capType captchaType, ss site) *CaptchaAnswer {
+func newCaptchaAnswer(id interface{}, token string, api_key string, capType captchaType, ss site, ua string) *CaptchaAnswer {
 	return &CaptchaAnswer{
 		id:           id,
 		Token:        token,
 		solving_site: ss,
 		api_key:      api_key,
 		capType:      capType,
+		UserAgent:    ua,
 	}
 }
 

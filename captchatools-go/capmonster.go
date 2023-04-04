@@ -146,6 +146,7 @@ func (c Capmonster) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAns
 		}
 
 		var solution string
+		var ua string = response.Solution.UserAgent
 		switch c.config.CaptchaType {
 		case V2Captcha, V3Captcha:
 			solution = response.Solution.GRecaptchaResponse
@@ -161,6 +162,7 @@ func (c Capmonster) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAns
 			c.config.Api_key,
 			c.config.CaptchaType,
 			AnticaptchaSite,
+			ua,
 		), nil
 	}
 	return nil, ErrMaxAttempts

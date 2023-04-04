@@ -115,6 +115,7 @@ func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAn
 		}
 
 		var solution string
+		var ua string = response.Solution.UserAgent
 		switch a.config.CaptchaType {
 		case V2Captcha, V3Captcha:
 			solution = response.Solution.GRecaptchaResponse
@@ -130,6 +131,7 @@ func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAn
 			a.config.Api_key,
 			a.config.CaptchaType,
 			AnticaptchaSite,
+			ua,
 		), nil
 	}
 	return nil, ErrMaxAttempts

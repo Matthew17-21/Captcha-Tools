@@ -4,7 +4,10 @@ package captchatoolsgo
 // go test -v -run ^TestHarvester$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 
 import (
+	"os"
 	"testing"
+
+	"github.com/joho/godotenv"
 )
 
 type testConfigs struct {
@@ -97,4 +100,19 @@ func TestGetV2(t *testing.T) {
 
 // TestGetV3 tests getting a V3 recaptcha token
 func TestGetV3(t *testing.T) {
+}
+
+// go test -v -run ^TestCapsolverHarvester$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
+func TestCapsolverHarvester(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	h, err := NewHarvester(CapsolverSite, &Config{Api_key: os.Getenv("CAPSOLVER_KEY"), CaptchaType: ImageCaptcha})
+	if err != nil {
+		t.Fatalf("Error getting new harvester: %v", err)
+	}
+	if _, err := h.GetBalance(); err != nil {
+		t.Errorf("Error getting balance: %v", err)
+	}
 }

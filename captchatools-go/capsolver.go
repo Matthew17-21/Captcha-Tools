@@ -162,9 +162,9 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		WebsiteKey string      `json:"websiteKey"`
 
 		// Recaptcha V2 Data
-		IsInvisible bool   `json:"isInvisible"`
-		UserAgent   string `json:"userAgent"`
-		Proxy       string `json:"proxy"`
+		IsInvisible bool   `json:"isInvisible,omitempty"`
+		UserAgent   string `json:"userAgent,omitempty"`
+		Proxy       string `json:"proxy,omitempty"`
 	}
 	type Payload struct {
 		ClientKey string `json:"clientKey"`

@@ -165,6 +165,10 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		IsInvisible bool   `json:"isInvisible,omitempty"`
 		UserAgent   string `json:"userAgent,omitempty"`
 		Proxy       string `json:"proxy,omitempty"`
+
+		// Recaptcha V3 Data
+		PageAction string  `json:"pageAction,omitempty"`
+		MinScore   float32 `json:"minScore,omitempty"`
 	}
 	type Payload struct {
 		ClientKey string `json:"clientKey"`
@@ -186,6 +190,13 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		p.Task.IsInvisible = c.IsInvisibleCaptcha
 		if data != nil && data.Proxy != nil {
 			p.Task.Type = "ReCaptchaV2Task"
+		}
+	case V3Captcha:
+		p.Task.Type = "ReCaptchaV3TaskProxyLess"
+		p.Task.MinScore = c.MinScore
+		p.Task.PageAction = c.Action
+		if data != nil && data.Proxy != nil {
+			p.Task.Type = "ReCaptchaV3Task"
 		}
 	}
 

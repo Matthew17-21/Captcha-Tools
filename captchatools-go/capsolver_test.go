@@ -51,3 +51,30 @@ func TestCapsolverRecapV2(t *testing.T) {
 	fmt.Println(answer)
 
 }
+
+// go test -v -run ^TestCapsolverRecapV3$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
+func TestCapsolverRecapV3(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+
+	// Run test
+	c := Capsolver{
+		&Config{
+			Api_key:     os.Getenv("CAPSOLVER_KEY"),
+			Sitekey:     "6LcR_okUAAAAAPYrPe-HK_0RULO1aZM15ENyM-Mf",
+			CaptchaURL:  "https://antcpt.com/score_detector/",
+			CaptchaType: V3Captcha, Action: "homepage", MinScore: 0.7,
+		},
+	}
+
+	answer, err := c.GetToken()
+	if err != nil {
+		t.Fatalf("Error getting token: %v", err)
+	}
+	if answer == nil {
+		t.Fatal("Answer is nil")
+	}
+	fmt.Println(answer)
+}

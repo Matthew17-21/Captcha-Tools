@@ -2,6 +2,7 @@ package captchatoolsgo
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,8 +38,13 @@ type anticaptchaResponse struct {
 }
 
 func (a Anticaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
-	return a.getCaptchaAnswer(additional...)
+	return a.getCaptchaAnswer(context.Background(), additional...)
 }
+
+func (a Anticaptcha) GetTokenWithContext(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return a.getCaptchaAnswer(ctx, additional...)
+}
+
 func (a Anticaptcha) GetBalance() (float32, error) {
 	return a.getBalance()
 }
@@ -73,7 +79,7 @@ func (a Anticaptcha) getID(data *AdditionalData) (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+func (a Anticaptcha) getCaptchaAnswer(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	var data *AdditionalData = nil
 	if len(additional) > 0 {
 		data = additional[0]
@@ -92,8 +98,13 @@ func (a Anticaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAn
 	})
 	response := &anticaptchaResponse{}
 	for i := 0; i < 100; i++ {
-		resp, err := http.Post("https://api.anti-captcha.com/getTaskResult", "application/json", bytes.NewBuffer([]byte(payload)))
+		reqToMake, _ := http.NewRequestWithContext(ctx, "POST", "https://api.anti-captcha.com/getTaskResult", bytes.NewBufferString(string(payload)))
+		reqToMake.Header.Add("Content-Type", "application/json")
+		resp, err := makeRequest(reqToMake)
 		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				return nil, fmt.Errorf("getCaptchaAnswer error: %w", err)
+			}
 			time.Sleep(3 * time.Second)
 			continue
 		}

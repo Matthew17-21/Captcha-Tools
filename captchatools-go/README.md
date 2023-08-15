@@ -260,18 +260,19 @@ func addtional_data() {
 - **[Capmonster](https://capmonster.cloud/)**
 - **[2Captcha](https://www.2captcha.com/)**
 - **[Anticaptcha](https://www.anti-captcha.com/)**
+- **[Capsolver](https://capsolver.com/)**
 
 ### Site-Specific Support:
-| Captcha Type            |2Captcha    | Anticaptcha | Capmonster| 
-| :-------------: |:-------------:| :-----:| :-----:| 
-| Recaptcha V2 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Recaptcha V3 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Hcaptcha | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Image Captcha | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Cloudflare Turnstile | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Funcaptcha |:x: | :x: | :x: |
-| GeeTest |:x: | :x: | :x: |
-| Amazon WAF |:x: | :x: | :x: |
+| Captcha Type            |2Captcha    | Anticaptcha | Capmonster| Capsolver |
+| :-------------: |:-------------:| :-----:| :-----:| :-----:| 
+| Recaptcha V2 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Recaptcha V3 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Hcaptcha | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Image Captcha | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Cloudflare Turnstile | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
+| Funcaptcha |:x: | :x: | :x: | :x: |
+| GeeTest |:x: | :x: | :x: | :x: |
+| Amazon WAF |:x: | :x: | :x: | :x: |
 
 
 

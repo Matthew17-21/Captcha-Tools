@@ -68,6 +68,8 @@ func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 		h = &Capmonster{config: config}
 	case TwoCaptchaSite:
 		h = &Twocaptcha{config: config}
+	case CapsolverSite:
+		h = &Capsolver{config}
 	default:
 		return nil, ErrNoHarvester
 	}

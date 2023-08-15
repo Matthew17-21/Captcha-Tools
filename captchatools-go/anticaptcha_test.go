@@ -1,15 +1,22 @@
 package captchatoolsgo
 
 import (
+	"os"
 	"testing"
-)
 
-const antiCapKey = "9f47074b59d3d4cf5c07961f90deb7d8"
+	"github.com/joho/godotenv"
+)
 
 // TestGetAnticapID tests that it can successfully get a ID from anticaptcha
 // to run this specific test:
 // go test -v -run ^TestGetAnticapID$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestGetAnticapID(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	antiCapKey := os.Getenv("ANTICAPTCHA_KEY")
+
 	var tests = []testConfigs{
 		{
 			SolvingSite: AnticaptchaSite,
@@ -58,6 +65,11 @@ func TestGetAnticapID(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestGetAnticapBalance$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestGetAnticapBalance(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	antiCapKey := os.Getenv("ANTICAPTCHA_KEY")
 	var tests = []testConfigs{
 		{
 			SolvingSite: AnticaptchaSite,
@@ -94,6 +106,11 @@ func TestGetAnticapBalance(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestGetAnticapV2$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestGetAnticapV2(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	antiCapKey := os.Getenv("ANTICAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: AnticaptchaSite,
@@ -133,6 +150,11 @@ func TestGetAnticapV2(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestAnticaptchaGetV2Additional$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestAnticaptchaGetV2Additional(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	antiCapKey := os.Getenv("ANTICAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: AnticaptchaSite,
@@ -189,6 +211,11 @@ func TestAnticaptchaGetV2Additional(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestGetAnticapV3$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestGetAnticapV3(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	antiCapKey := os.Getenv("ANTICAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: AnticaptchaSite,
@@ -213,6 +240,11 @@ func TestGetAnticapV3(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2AntiCaptchaGetImage$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2AntiCaptchaGetImage(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	antiCapKey := os.Getenv("ANTICAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: AnticaptchaSite,

@@ -1,15 +1,21 @@
 package captchatoolsgo
 
 import (
+	"os"
 	"testing"
-)
 
-const capmonsterKey = "2cffb45a7f3b15b7f7bfd5c53c08d0cd"
+	"github.com/joho/godotenv"
+)
 
 // TestCapmonsterGetID tests that it can successfully get a ID from Capmonster
 // to run this specific test:
 // go test -v -run ^TestCapmonsterGetID$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestCapmonsterGetID(t *testing.T) {
+	// Load Env
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	var tests = []testConfigs{
 		{
 			SolvingSite: CapmonsterSite,
@@ -58,6 +64,10 @@ func TestCapmonsterGetID(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestCapmonsterGetBalance$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestCapmonsterGetBalance(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	var tests = []testConfigs{
 		{
 			SolvingSite: CapmonsterSite,
@@ -94,6 +104,10 @@ func TestCapmonsterGetBalance(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestCapmonsterGetV2$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestCapmonsterGetV2(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: CapmonsterSite,
@@ -131,6 +145,10 @@ func TestCapmonsterGetV2(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestCapmonsterGetV2Additional$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestCapmonsterGetV2Additional(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: CapmonsterSite,
@@ -187,6 +205,10 @@ func TestCapmonsterGetV2Additional(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^TestCapmonsterGetV3$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func TestCapmonsterGetV3(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: CapmonsterSite,
@@ -211,6 +233,10 @@ func TestCapmonsterGetV3(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2CapmonsterGetImage$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CapmonsterGetImage(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: CapmonsterSite,

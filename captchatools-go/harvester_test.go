@@ -59,8 +59,12 @@ var configs = []testConfigs{
 }
 
 func TestHarvester(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	capmonsterKey := os.Getenv("CAPMONSTER_KEY")
 	solver, err := NewHarvester(CapmonsterSite, &Config{
-		Api_key:     "2cffb45a7f3b15b7f7bfd5c53c08d0cd",
+		Api_key:     capmonsterKey,
 		Sitekey:     "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-",
 		CaptchaURL:  "https://www.google.com/recaptcha/api2/demo",
 		CaptchaType: "V2",

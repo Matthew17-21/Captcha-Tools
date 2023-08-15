@@ -2,15 +2,20 @@ package captchatoolsgo
 
 import (
 	"fmt"
+	"os"
 	"testing"
-)
 
-const twocapKey = "c9a8a86ed4e59e331e2ca6a304155d6b"
+	"github.com/joho/godotenv"
+)
 
 // Test2CaptchaGetID tests that it can successfully get a ID from 2Captcha
 // to run this specific test:
 // go test -v -run ^Test2CaptchaGetID$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CaptchaGetID(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	twocapKey := os.Getenv("2CAPTCHA_KEY")
 	var tests = []testConfigs{
 		{
 			SolvingSite: TwoCaptchaSite,
@@ -59,6 +64,10 @@ func Test2CaptchaGetID(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2CaptchaGetBalance$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CaptchaGetBalance(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	twocapKey := os.Getenv("2CAPTCHA_KEY")
 	var tests = []testConfigs{
 		{
 			SolvingSite: TwoCaptchaSite,
@@ -95,6 +104,10 @@ func Test2CaptchaGetBalance(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2CaptchaGetV2$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CaptchaGetV2(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	twocapKey := os.Getenv("2CAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: TwoCaptchaSite,
@@ -132,6 +145,10 @@ func Test2CaptchaGetV2(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2CaptchaGetV2Additional$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CaptchaGetV2Additional(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	twocapKey := os.Getenv("2CAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: TwoCaptchaSite,
@@ -182,6 +199,10 @@ func Test2CaptchaGetV2Additional(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2CaptchaGetV3$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CaptchaGetV3(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	twocapKey := os.Getenv("2CAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: TwoCaptchaSite,
@@ -206,6 +227,10 @@ func Test2CaptchaGetV3(t *testing.T) {
 // to run this specific test:
 // go test -v -run ^Test2CaptchaGetImage$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
 func Test2CaptchaGetImage(t *testing.T) {
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+	twocapKey := os.Getenv("2CAPTCHA_KEY")
 	configs := []testConfigs{
 		{
 			SolvingSite: TwoCaptchaSite,

@@ -169,6 +169,9 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		// Recaptcha V3 Data
 		PageAction string  `json:"pageAction,omitempty"`
 		MinScore   float32 `json:"minScore,omitempty"`
+
+		// Image Captcha data
+		B64Image string `json:"body,omitempty"`
 	}
 	type Payload struct {
 		ClientKey string `json:"clientKey"`
@@ -185,6 +188,11 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 	}
 
 	switch c.CaptchaType {
+	case ImageCaptcha:
+		p.Task.Type = "ImageToTextTask"
+		if data != nil {
+			p.Task.B64Image = data.B64Img
+		}
 	case V2Captcha:
 		p.Task.Type = "ReCaptchaV2TaskProxyLess"
 		p.Task.IsInvisible = c.IsInvisibleCaptcha

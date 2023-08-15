@@ -2,6 +2,7 @@ package captchatoolsgo
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -68,8 +69,13 @@ type capmonsterBalanceResponse struct {
 }
 
 func (c Capmonster) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
-	return c.getCaptchaAnswer(additional...)
+	return c.getCaptchaAnswer(context.Background(), additional...)
 }
+
+func (c Capmonster) GetTokenWithContext(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return c.getCaptchaAnswer(ctx, additional...)
+}
+
 func (c Capmonster) GetBalance() (float32, error) {
 	return c.getBalance()
 }
@@ -104,7 +110,7 @@ func (c Capmonster) getID(data *AdditionalData) (int, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (c Capmonster) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+func (c Capmonster) getCaptchaAnswer(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	var data *AdditionalData = nil
 	if len(additional) > 0 {
 		data = additional[0]
@@ -123,8 +129,13 @@ func (c Capmonster) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAns
 	})
 	response := &capmonsterTokenResponse{}
 	for i := 0; i < 100; i++ {
-		resp, err := http.Post("https://api.capmonster.cloud/getTaskResult", "application/json", bytes.NewBuffer([]byte(payload)))
+		req, _ := http.NewRequestWithContext(ctx, "POST", "https://api.capmonster.cloud/getTaskResult", bytes.NewBufferString(string(payload)))
+		req.Header.Add("Content-Type", "application/json")
+		resp, err := makeRequest(req)
 		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				return nil, fmt.Errorf("getCaptchaAnswer error: %w", err)
+			}
 			time.Sleep(3 * time.Second)
 			continue
 		}

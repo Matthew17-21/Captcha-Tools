@@ -198,6 +198,12 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		if data != nil && data.Proxy != nil {
 			p.Task.Type = "ReCaptchaV3Task"
 		}
+	case HCaptcha:
+		p.Task.Type = "HCaptchaTaskProxyLess"
+		if data != nil && data.Proxy != nil {
+			p.Task.Type = "HCaptchaTurboTask"
+		}
+
 	}
 
 	// Check for any additional data about the task

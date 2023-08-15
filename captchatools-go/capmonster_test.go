@@ -1,6 +1,7 @@
 package captchatoolsgo
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -132,7 +133,7 @@ func TestCapmonsterGetV2(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Capmonster{c.Config}
-			_, err := a.getCaptchaAnswer()
+			_, err := a.getCaptchaAnswer(context.Background())
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -193,7 +194,7 @@ func TestCapmonsterGetV2Additional(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Capmonster{c.Config}
-			_, err := a.getCaptchaAnswer(c.AdditionalData)
+			_, err := a.getCaptchaAnswer(context.Background(), c.AdditionalData)
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -221,7 +222,7 @@ func TestCapmonsterGetV3(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Capmonster{c.Config}
-			_, err := a.getCaptchaAnswer()
+			_, err := a.getCaptchaAnswer(context.Background())
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -251,7 +252,7 @@ func Test2CapmonsterGetImage(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Capmonster{c.Config}
-			answer, err := a.getCaptchaAnswer(&AdditionalData{B64Img: c.Image})
+			answer, err := a.getCaptchaAnswer(context.Background(), &AdditionalData{B64Img: c.Image})
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}

@@ -2,7 +2,9 @@ package captchatoolsgo
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -51,7 +53,11 @@ func (c Capsolver) getBalance() (float32, error) {
 }
 
 func (c Capsolver) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
-	return c.getCaptchaAnswer(additional...)
+	return c.getCaptchaAnswer(context.Background(), additional...)
+}
+
+func (c Capsolver) GetTokenWithContext(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return c.getCaptchaAnswer(ctx, additional...)
 }
 
 // Method to get Queue ID from the API.
@@ -87,7 +93,7 @@ func (c Capsolver) getID(data *AdditionalData) (string, error) {
 	return "", ErrMaxAttempts
 }
 
-func (c Capsolver) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+func (c Capsolver) getCaptchaAnswer(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	var data *AdditionalData = nil
 	if len(additional) > 0 {
 		data = additional[0]
@@ -110,8 +116,13 @@ func (c Capsolver) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnsw
 	})
 	response := &capmonsterTokenResponse{}
 	for i := 0; i < 50; i++ {
-		resp, err := http.Post("https://api.capsolver.com/getTaskResult", "application/json", bytes.NewBuffer([]byte(payload)))
+		reqToMake, _ := http.NewRequestWithContext(ctx, "POST", "https://api.capsolver.com/getTaskResult", bytes.NewBuffer(payload))
+		reqToMake.Header.Add("Content-Type", "application/json")
+		resp, err := makeRequest(reqToMake)
 		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				return nil, fmt.Errorf("getCaptchaAnswer error: %w", err)
+			}
 			time.Sleep(3 * time.Second)
 			continue
 		}

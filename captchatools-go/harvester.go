@@ -1,5 +1,10 @@
 package captchatoolsgo
 
+import (
+	"context"
+	"net/http"
+)
+
 /*
 NewHarvester returns a captcha harvester based on the info given
 by the caller. An error is returned if there is no proper
@@ -26,7 +31,8 @@ https://github.com/Matthew17-21/Captcha-Tools
 // Interface that will allow us to interact with the methods from the
 // individual structs
 type Harvester interface {
-	GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) // Function to get a captcha token
+	GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error)                                 // Function to get a captcha token
+	GetTokenWithContext(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) // Function to get a captcha token
 	GetBalance() (float32, error)
 }
 
@@ -74,4 +80,11 @@ func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 		return nil, ErrNoHarvester
 	}
 	return h, nil
+}
+
+// makeRequest is a wrapper function to httpClient.Do
+func makeRequest(req *http.Request) (*http.Response, error) {
+	c := http.Client{}
+	defer c.CloseIdleConnections()
+	return c.Do(req)
 }

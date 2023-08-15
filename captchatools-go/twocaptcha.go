@@ -2,6 +2,7 @@ package captchatoolsgo
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -43,8 +44,13 @@ type twocaptchaResponse struct {
 }
 
 func (t Twocaptcha) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
-	return t.getCaptchaAnswer(additional...)
+	return t.getCaptchaAnswer(context.Background(), additional...)
 }
+
+func (t Twocaptcha) GetTokenWithContext(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
+	return t.getCaptchaAnswer(ctx, additional...)
+}
+
 func (t Twocaptcha) GetBalance() (float32, error) {
 	return t.getBalance()
 }
@@ -79,7 +85,7 @@ func (t Twocaptcha) getID(data *AdditionalData) (string, error) {
 }
 
 // This method gets the captcha token from the Capmonster API
-func (t Twocaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAnswer, error) {
+func (t Twocaptcha) getCaptchaAnswer(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
 	var data *AdditionalData = nil
 	if len(additional) > 0 {
 		data = additional[0]
@@ -99,8 +105,12 @@ func (t Twocaptcha) getCaptchaAnswer(additional ...*AdditionalData) (*CaptchaAns
 		queueID,
 	)
 	for i := 0; i < 100; i++ {
-		resp, err := http.Get(urlToAnswer)
+		req, _ := http.NewRequestWithContext(ctx, "GET", urlToAnswer, nil)
+		resp, err := makeRequest(req)
 		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				return nil, fmt.Errorf("getCaptchaAnswer error: %w", err)
+			}
 			time.Sleep(3 * time.Second)
 			continue
 		}

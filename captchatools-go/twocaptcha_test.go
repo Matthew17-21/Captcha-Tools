@@ -1,9 +1,13 @@
 package captchatoolsgo
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -132,7 +136,7 @@ func Test2CaptchaGetV2(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Twocaptcha{c.Config}
-			_, err := a.getCaptchaAnswer()
+			_, err := a.getCaptchaAnswer(context.Background())
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -187,7 +191,7 @@ func Test2CaptchaGetV2Additional(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Twocaptcha{c.Config}
-			_, err := a.getCaptchaAnswer(c.AdditionalData)
+			_, err := a.getCaptchaAnswer(context.Background(), c.AdditionalData)
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -215,7 +219,7 @@ func Test2CaptchaGetV3(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Twocaptcha{c.Config}
-			_, err := a.getCaptchaAnswer()
+			_, err := a.getCaptchaAnswer(context.Background())
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -244,7 +248,7 @@ func Test2CaptchaGetImage(t *testing.T) {
 	for _, c := range configs {
 		t.Run(c.Name, func(t *testing.T) {
 			a := &Twocaptcha{c.Config}
-			answer, err := a.getCaptchaAnswer(&AdditionalData{B64Img: c.Image})
+			answer, err := a.getCaptchaAnswer(context.Background(), &AdditionalData{B64Img: c.Image})
 			if err != nil && !c.ExpectError {
 				t.Fatalf(`getID() Error: %v , wanted: %v`, err, nil)
 			}
@@ -254,4 +258,25 @@ func Test2CaptchaGetImage(t *testing.T) {
 			fmt.Println()
 		})
 	}
+}
+
+// go test -v -run ^TestSometing$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
+func TestSometing(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
+	defer cancel()
+
+	reqToMake, _ := http.NewRequestWithContext(ctx, "GET", "https://httpbin.org/delay/10", nil)
+	c := http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	_, err := c.Do(reqToMake)
+	if err != nil {
+		fmt.Println(errors.Is(err, context.Canceled))
+		fmt.Println(errors.Is(err, context.DeadlineExceeded))
+		fmt.Printf("%v || %T\n", err, err)
+		return
+	}
+	t.Fatal("Not supposed to be any error")
+
 }

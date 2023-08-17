@@ -19,8 +19,8 @@ func TestCaptchaAiV2(t *testing.T) {
 	// Create tests
 	configs := []Config{
 		{Api_key: os.Getenv("CAPTCHAAI_KEY"), Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: V2Captcha},
+		{Api_key: os.Getenv("CAPTCHAAI_KEY"), Sitekey: "6LcmDCcUAAAAAL5QmnMvDFnfPTP4iCUYRk2MwC0-", CaptchaURL: "https://recaptcha-demo.appspot.com/recaptcha-v2-invisible.php", CaptchaType: V2Captcha, IsInvisibleCaptcha: true},
 	}
-	// TODO invisible captcha test
 
 	// Run tests
 	for testNum, config := range configs {

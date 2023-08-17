@@ -124,7 +124,7 @@ func (t CaptchaAi) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 func (t CaptchaAi) getBalance() (float32, error) {
 	// Attempt to get the balance from the API
 	// Max attempts is 5
-	url := fmt.Sprintf("https://2captcha.com/res.php?key=%v&action=getbalance&json=1", t.Api_key)
+	url := fmt.Sprintf("https://ocr.captchaai.com/res.php?key=%v&action=getbalance&json=1", t.Api_key)
 	response := &twocaptchaResponse{}
 	for i := 0; i < 5; i++ {
 		resp, err := http.Get(url)

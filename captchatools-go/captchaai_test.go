@@ -121,3 +121,30 @@ func TestCaptchaAiNormalCap(t *testing.T) {
 	}
 
 }
+
+// Test getting balance info
+// go test -v -run ^TestCaptchaAiGetBalance$ github.com/Matthew17-21/Captcha-Tools/captchatools-go
+func TestCaptchaAiGetBalance(t *testing.T) {
+	// Load ENV
+	if err := godotenv.Load("../.env"); err != nil {
+		t.Fatalf("Failed to load .env file: %v", err)
+	}
+
+	// Create tests
+	configs := []Config{
+		{Api_key: os.Getenv("CAPTCHAAI_KEY"), CaptchaType: ImageCaptcha},
+	}
+
+	// Run tests
+	for testNum, config := range configs {
+		t.Run(fmt.Sprintf("Test #%v", testNum+1), func(t *testing.T) {
+			h := CaptchaAi{&config}
+			balance, err := h.GetBalance()
+			if err != nil {
+				t.Fatalf("Error getting balance: %v", err)
+			}
+			fmt.Println(balance)
+		})
+	}
+
+}

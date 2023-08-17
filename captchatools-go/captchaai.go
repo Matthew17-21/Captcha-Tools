@@ -114,7 +114,7 @@ func (t CaptchaAi) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 			response.Request,
 			t.Api_key,
 			t.CaptchaType,
-			TwoCaptchaSite, //TODO change this
+			CaptchaAiSite,
 			"",
 		), nil
 	}

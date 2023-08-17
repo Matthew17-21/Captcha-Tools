@@ -173,7 +173,7 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 	query.Add("json", "1")
 	query.Add("pageurl", t.CaptchaURL)
 	switch t.CaptchaType {
-	case ImageCaptcha:
+	case ImageCaptcha: // TODO
 	case V2Captcha:
 		query.Add("method", "userrecaptcha")
 		query.Add("googlekey", t.Sitekey)
@@ -191,8 +191,10 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 			query.Add("min_score", fmt.Sprintf("%v", t.MinScore))
 		}
 	case HCaptcha:
-	case CFTurnstile:
-		// TODO return `Not Supported` eror
+		query.Add("method", "hcaptcha")
+		query.Add("sitekey", t.Sitekey)
+
+	case CFTurnstile: // TODO return `Not Supported` eror
 	default:
 		return "", ErrIncorrectCapType
 	}

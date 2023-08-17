@@ -181,6 +181,15 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 			query.Add("invisible", "1")
 		}
 	case V3Captcha:
+		query.Add("method", "userrecaptcha")
+		query.Add("version", "v3")
+		query.Add("googlekey", t.Sitekey)
+		if t.Action != "" {
+			query.Add("action", t.Action)
+		}
+		if t.MinScore > 0 {
+			query.Add("min_score", fmt.Sprintf("%v", t.MinScore))
+		}
 	case HCaptcha:
 	case CFTurnstile:
 		// TODO return `Not Supported` eror

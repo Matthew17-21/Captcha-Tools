@@ -6,6 +6,7 @@ const (
 	AnticaptchaSite             // The int 2 will represent Anticaptcha
 	TwoCaptchaSite              // The int 3 will represent 2captcha
 	CapsolverSite
+	CaptchaAiSite
 )
 
 const (

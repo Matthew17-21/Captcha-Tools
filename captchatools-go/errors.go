@@ -28,6 +28,7 @@ var (
 	ErrMissingValues       = errors.New("some of the required values for successive user emulation are missing")
 	ErrAddionalDataMissing = errors.New("additional data is missing. Refer to guide")
 	ErrProxyEmpty          = errors.New("proxy is blank")
+	ErrNotSupported        = errors.New("captcha type not supported")
 )
 
 // errCodeToError converts an error ID returned from the site and

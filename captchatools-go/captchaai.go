@@ -174,6 +174,10 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 	query.Add("pageurl", t.CaptchaURL)
 	switch t.CaptchaType {
 	case ImageCaptcha: // TODO
+		query.Add("method", "base64")
+		if data != nil && data.B64Img != "" {
+			query.Add("body", data.B64Img)
+		}
 	case V2Captcha:
 		query.Add("method", "userrecaptcha")
 		query.Add("googlekey", t.Sitekey)

@@ -261,6 +261,7 @@ func addtional_data() {
 - **[2Captcha](https://www.2captcha.com/)**
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 - **[Capsolver](https://capsolver.com/)**
+- **[CaptchaAI](https://captchaai.com/)**
 
 ### Site-Specific Support:
 | Captcha Type            |2Captcha    | Anticaptcha | Capmonster| Capsolver | CaptchaAI|

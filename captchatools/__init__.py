@@ -23,6 +23,7 @@ __license__ = "MIT"
 from abc import ABC, abstractmethod
 from typing import Optional
 from . import exceptions as captchaExceptions
+from warnings import warn
 class Harvester(ABC):
     '''
     Represents a captcha harvester.
@@ -87,4 +88,5 @@ def new_harvester(**kwargs) -> Harvester:
 
 # Just for backward compatibility
 def captcha_harvesters(**kwargs) -> Harvester:
+    warn('This function is deprecated. Use the `new_harvester() function`', DeprecationWarning, stacklevel=2)
     return new_harvester(**kwargs)

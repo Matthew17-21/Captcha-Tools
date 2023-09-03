@@ -16,7 +16,7 @@ Sites:
 2 = Anticaptcha
 3 = 2captcha
 '''
-__version__ = "2.0.0"
+__version__ = "1.3.0"
 __author__ = "Matthew17-21"
 __license__ = "MIT"
 

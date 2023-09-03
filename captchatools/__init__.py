@@ -75,7 +75,9 @@ def new_harvester(**kwargs) -> Harvester:
     from .capmonster import Capmonster
     from .capsolver import Capsolver
     
-    site = kwargs.get("solving_site","").lower()
+    site = kwargs.get("solving_site","")
+    if isinstance(site, str):
+        site = site.lower()
     if site == 1 or site == "capmonster":
         return Capmonster(**kwargs)
     elif site == 2 or site == "anticaptcha":

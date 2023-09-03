@@ -15,6 +15,7 @@ Sites:
 1 = Capmonster
 2 = Anticaptcha
 3 = 2captcha
+4 = Capsolver
 '''
 __version__ = "1.3.0"
 __author__ = "Matthew17-21"

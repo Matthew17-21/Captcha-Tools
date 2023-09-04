@@ -74,6 +74,7 @@ def new_harvester(**kwargs) -> Harvester:
     from .anticaptcha import Anticaptcha
     from .capmonster import Capmonster
     from .capsolver import Capsolver
+    from .captchaai import CaptchaAI
     
     site = kwargs.get("solving_site","")
     if isinstance(site, str):
@@ -86,6 +87,8 @@ def new_harvester(**kwargs) -> Harvester:
         return Twocap(**kwargs)
     elif site == 4 or site == "capsolver":
         return Capsolver(**kwargs)
+    elif site == 5 or site == "captchaai":
+        return CaptchaAI(**kwargs)
     raise captchaExceptions.NoHarvesterException("No solving site selected")
 
 

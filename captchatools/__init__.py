@@ -16,6 +16,7 @@ Sites:
 2 = Anticaptcha
 3 = 2captcha
 4 = Capsolver
+5 = CaptchaAI
 '''
 __version__ = "1.4.1"
 __author__ = "Matthew17-21"
@@ -94,5 +95,5 @@ def new_harvester(**kwargs) -> Harvester:
 
 # Just for backward compatibility
 def captcha_harvesters(**kwargs) -> Harvester:
-    warn('This function is deprecated. Use the `new_harvester() function`', DeprecationWarning, stacklevel=2)
+    warn('This function is deprecated. Use the `new_harvester()` function', DeprecationWarning, stacklevel=2)
     return new_harvester(**kwargs)

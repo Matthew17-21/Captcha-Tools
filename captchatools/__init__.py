@@ -17,7 +17,7 @@ Sites:
 3 = 2captcha
 4 = Capsolver
 '''
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 __author__ = "Matthew17-21"
 __license__ = "MIT"
 

@@ -156,7 +156,7 @@ def main():
 
 
 # Changelog
-### 1.4.0
+### 1.4.1
 ##### What's new
 1. Added CaptchaAI
 2. Removed internal redundant code

@@ -114,6 +114,7 @@ def main():
 - **[2Captcha](https://www.2captcha.com/)**
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 - **[Capsolver](https://www.capsolver.com/)**
+- **[CaptchaAI](https://captchaai.com/)**
 
 ### Site-Specific Support:
 | Site            | Site ID |Captcha Types  Supported    |  Task Types Supported|
@@ -121,6 +122,8 @@ def main():
 | Capmonster      | captchatools.CapmonsterSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | ImageToTextTask,<br/>NoCaptchaTask,<br/> NoCaptchaTaskProxyless,<br/> RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
 | Anticaptcha     | captchatools.AnticaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    ImageToTextTask,<br/> RecaptchaV2Task<br/>  RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
 | 2Captcha        | captchatools.TwoCaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
+| Capsolver        | captchatools.CapsolverSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
+| CaptchaAI        | captchatools.CaptchaAISite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
 
 
 
@@ -145,7 +148,7 @@ from captchatools import new_harvester, exceptions as captchaExceptions,
 def main():
     try:
         harvester = new_harvester()
-        token harvester.get_token()
+        token = harvester.get_token()
     except captchaExceptions.NoHarvesterException:
         print("I need to set my captcha harvester!")
 ```
@@ -153,6 +156,11 @@ def main():
 
 
 # Changelog
+### 1.4.0
+##### What's new
+1. Added CaptchaAI
+2. Removed internal redundant code
+3. Fix creating a new harvester if pass in the ID
 ### 1.3.0
 ##### What's new
 1. Get Balance Support

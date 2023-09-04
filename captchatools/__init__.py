@@ -15,14 +15,17 @@ Sites:
 1 = Capmonster
 2 = Anticaptcha
 3 = 2captcha
+4 = Capsolver
+5 = CaptchaAI
 '''
-__version__ = "2.0.0"
+__version__ = "1.4.1"
 __author__ = "Matthew17-21"
 __license__ = "MIT"
 
 from abc import ABC, abstractmethod
 from typing import Optional
 from . import exceptions as captchaExceptions
+from warnings import warn
 class Harvester(ABC):
     '''
     Represents a captcha harvester.
@@ -72,8 +75,11 @@ def new_harvester(**kwargs) -> Harvester:
     from .anticaptcha import Anticaptcha
     from .capmonster import Capmonster
     from .capsolver import Capsolver
+    from .captchaai import CaptchaAI
     
-    site = kwargs.get("solving_site","").lower()
+    site = kwargs.get("solving_site","")
+    if isinstance(site, str):
+        site = site.lower()
     if site == 1 or site == "capmonster":
         return Capmonster(**kwargs)
     elif site == 2 or site == "anticaptcha":
@@ -82,9 +88,12 @@ def new_harvester(**kwargs) -> Harvester:
         return Twocap(**kwargs)
     elif site == 4 or site == "capsolver":
         return Capsolver(**kwargs)
+    elif site == 5 or site == "captchaai":
+        return CaptchaAI(**kwargs)
     raise captchaExceptions.NoHarvesterException("No solving site selected")
 
 
 # Just for backward compatibility
 def captcha_harvesters(**kwargs) -> Harvester:
+    warn('This function is deprecated. Use the `new_harvester()` function', DeprecationWarning, stacklevel=2)
     return new_harvester(**kwargs)

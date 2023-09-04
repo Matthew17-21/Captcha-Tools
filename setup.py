@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from io import open
 
 PACKAGE_NAME = "captchatools"
-VERSION = "1.3.0"
+VERSION = "1.4.1"
 SHORT_DESCRIPTION = "Python module to help solve captchas with Capmonster, 2captcha and Anticaptcha API's!"
 GITHUB_URL = "https://github.com/Matthew17-21/Captcha-Tools"
 

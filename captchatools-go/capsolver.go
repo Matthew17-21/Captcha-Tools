@@ -167,6 +167,9 @@ func (c Capsolver) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 }
 
 func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
+	type EnterprisePayload struct {
+		Rqdata string `json:"rqdata"`
+	}
 	type Task struct {
 		Type       captchaType `json:"type"`
 		WebsiteURL string      `json:"websiteURL"`
@@ -183,6 +186,9 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 
 		// Image Captcha data
 		B64Image string `json:"body,omitempty"`
+
+		// Custom data that is used in some implementations of hCaptcha Enterprise.
+		HcapEnterpriseData EnterprisePayload `json:"enterprisePayload"`
 	}
 	type Payload struct {
 		ClientKey string `json:"clientKey"`
@@ -232,6 +238,11 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		}
 		if data.Proxy != nil {
 			p.Task.Proxy = data.Proxy.StringFormatted()
+		}
+		if data.RQData != "" {
+			p.Task.HcapEnterpriseData = EnterprisePayload{
+				Rqdata: data.RQData,
+			}
 		}
 	}
 

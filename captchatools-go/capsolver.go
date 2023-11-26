@@ -159,7 +159,7 @@ func (c Capsolver) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 			solution,
 			c.Api_key,
 			c.CaptchaType,
-			AnticaptchaSite, // TODO change this
+			CapsolverSite,
 			ua,
 		), nil
 	}

@@ -42,7 +42,6 @@ type AdditionalData struct {
 	ProxyType string // Type of your proxy: HTTP, HTTPS, SOCKS4, SOCKS5
 	UserAgent string // UserAgent that will be passed to the service and used to solve the captcha
 	RQData    string // Custom rqdata for hcaptcha
-	RQToken   string // Custom rqtoken for hcaptcha
 }
 
 // Configurations for the captchas you are solving.

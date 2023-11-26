@@ -38,6 +38,7 @@ type capmonsterIDPayload struct {
 		ProxyLogin    string      `json:"proxyLogin,omitempty"`
 		ProxyPassword string      `json:"proxyPassword,omitempty"`
 		UserAgent     string      `json:"userAgent,omitempty"`
+		RqData        string      `json:"data,omitempty"` // Custom data that is used in some implementations of hCaptcha, mostly with isInvisible=true. In most cases you see it as rqdata inside network requests.
 	} `json:"task"`
 }
 type capmonsterCapAnswerPayload struct {
@@ -228,6 +229,7 @@ func (c Capmonster) createPayload(data *AdditionalData) (string, error) {
 			ProxyLogin    string      "json:\"proxyLogin,omitempty\""
 			ProxyPassword string      "json:\"proxyPassword,omitempty\""
 			UserAgent     string      "json:\"userAgent,omitempty\""
+			RqData        string      "json:\"data,omitempty\""
 		}{
 			WebsiteURL: c.config.CaptchaURL,
 			WebsiteKey: c.config.Sitekey,
@@ -281,8 +283,21 @@ func (c Capmonster) createPayload(data *AdditionalData) (string, error) {
 	}
 
 	// Check for addtional data
-	if data != nil && data.UserAgent != "" {
-		payload.Task.UserAgent = data.UserAgent
+	if data != nil && c.config.CaptchaType != ImageCaptcha {
+		if data.UserAgent != "" {
+			payload.Task.UserAgent = data.UserAgent
+		}
+		if data.Proxy != nil {
+			if port, err := strconv.Atoi(data.Proxy.Port); err == nil {
+				payload.Task.ProxyAddress = data.Proxy.Ip
+				payload.Task.ProxyPort = port
+				payload.Task.ProxyLogin = data.Proxy.User
+				payload.Task.ProxyPassword = data.Proxy.Password
+			}
+		}
+		if data.RQData != "" {
+			payload.Task.RqData = data.RQData
+		}
 	}
 
 	encoded, _ := json.Marshal(payload)

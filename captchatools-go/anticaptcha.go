@@ -179,27 +179,43 @@ Possible errors that can be returned:
 1) ErrIncorrectCapType
 */
 func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
+	type EnterprisePayload struct {
+		Rqdata      string `json:"rqdata,omitempty"`
+		Sentry      bool   `json:"sentry,omitempty"`
+		ApiEndpoint string `json:"apiEndpoint,omitempty"`
+		Endpoint    string `json:"endpoint,omitempty"`
+		ReportAPI   string `json:"reportapi,omitempty"`
+		AssetHost   string `json:"assethost,omitempty"`
+		ImgHost     string `json:"imghost,omitempty"`
+	}
+	type Task struct {
+		Type               captchaType        `json:"type"`
+		WebsiteURL         string             `json:"websiteURL"`
+		WebsiteKey         string             `json:"websiteKey"`
+		IsInvisible        bool               `json:"isInvisible,omitempty"`
+		MinScore           float32            `json:"minScore,omitempty"`
+		PageAction         string             `json:"pageAction,omitempty"`
+		Body               string             `json:"body,omitempty"`
+		ProxyType          string             `json:"proxyType,omitempty"`
+		ProxyAddress       string             `json:"proxyAddress,omitempty"`
+		ProxyPort          int                `json:"proxyPort,omitempty"`
+		ProxyLogin         string             `json:"proxyLogin,omitempty"`
+		ProxyPassword      string             `json:"proxyPassword,omitempty"`
+		UserAgent          string             `json:"userAgent,omitempty"`
+		HcapEnterpriseData *EnterprisePayload `json:"enterprisePayload,omitempty"`
+	}
+	type Payload struct {
+		ClientKey string `json:"clientKey"`
+		Task      Task   `json:"task"`
+		SoftID    int    `json:"softId,omitempty"`
+	}
 	// Define the payload we are going to send to the API
-	payload := capmonsterIDPayload{
+	payload := Payload{
 		ClientKey: a.config.Api_key,
-		Task: struct {
-			WebsiteURL    string      "json:\"websiteURL\""
-			WebsiteKey    string      "json:\"websiteKey\""
-			Type          captchaType "json:\"type\""
-			IsInvisible   bool        "json:\"isInvisible,omitempty\""
-			MinScore      float32     "json:\"minScore,omitempty\""
-			PageAction    string      "json:\"pageAction,omitempty\""
-			Body          string      "json:\"body,omitempty\""
-			ProxyType     string      "json:\"proxyType,omitempty\""
-			ProxyAddress  string      "json:\"proxyAddress,omitempty\""
-			ProxyPort     int         "json:\"proxyPort,omitempty\""
-			ProxyLogin    string      "json:\"proxyLogin,omitempty\""
-			ProxyPassword string      "json:\"proxyPassword,omitempty\""
-			UserAgent     string      "json:\"userAgent,omitempty\""
-		}{
-			WebsiteURL: a.config.CaptchaURL,
-			WebsiteKey: a.config.Sitekey,
+		Task: Task{
 			Type:       a.config.CaptchaType,
+			WebsiteKey: a.config.Sitekey,
+			WebsiteURL: a.config.CaptchaURL,
 		},
 	}
 
@@ -254,6 +270,26 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 		payload.Task.Type = "TurnstileTaskProxyless"
 	default:
 		return "", ErrIncorrectCapType
+	}
+
+	// Check for any additional data about the task
+	if data != nil && a.config.CaptchaType != ImageCaptcha {
+		if data.UserAgent != "" {
+			payload.Task.UserAgent = data.UserAgent
+		}
+		if data.Proxy != nil {
+			if port, err := strconv.Atoi(data.Proxy.Port); err == nil {
+				payload.Task.ProxyAddress = data.Proxy.Ip
+				payload.Task.ProxyPort = port
+				payload.Task.ProxyLogin = data.Proxy.User
+				payload.Task.ProxyPassword = data.Proxy.Password
+			}
+		}
+		if data.RQData != "" {
+			payload.Task.HcapEnterpriseData = &EnterprisePayload{
+				Rqdata: data.RQData,
+			}
+		}
 	}
 	encoded, _ := json.Marshal(payload)
 	return string(encoded), nil

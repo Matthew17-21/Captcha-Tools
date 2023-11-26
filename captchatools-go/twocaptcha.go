@@ -35,6 +35,7 @@ type twoCapIDPayload struct {
 	UserAgent string  `json:"userAgent,omitempty"` // userAgent that will be used to solve the captcha
 	Proxy     string  `json:"proxy,omitempty"`     // Proxy to use to solve captchas from
 	ProxyType string  `json:"proxytype,omitempty"` // Type of the proxy
+	RQData    string  `json:"data,omitempty"`      // Custom rqdata. mostly with invisible=1
 }
 
 // Type that will be used when getting a response from 2captcha
@@ -231,6 +232,9 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 		}
 		if data.ProxyType != "" {
 			payload.ProxyType = data.ProxyType
+		}
+		if data.RQData != "" {
+			payload.RQData = data.RQData
 		}
 	}
 

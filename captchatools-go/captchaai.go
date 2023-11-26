@@ -213,6 +213,9 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 		if data.ProxyType != "" {
 			query.Add("proxytype", data.ProxyType)
 		}
+		if data.RQData != "" {
+			query.Add("data", data.RQData)
+		}
 	}
 
 	u.RawQuery = query.Encode()

@@ -188,7 +188,7 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 		B64Image string `json:"body,omitempty"`
 
 		// Custom data that is used in some implementations of hCaptcha Enterprise.
-		HcapEnterpriseData EnterprisePayload `json:"enterprisePayload"`
+		HcapEnterpriseData *EnterprisePayload `json:"enterprisePayload,omitempty"`
 	}
 	type Payload struct {
 		ClientKey string `json:"clientKey"`
@@ -240,7 +240,7 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 			p.Task.Proxy = data.Proxy.StringFormatted()
 		}
 		if data.RQData != "" {
-			p.Task.HcapEnterpriseData = EnterprisePayload{
+			p.Task.HcapEnterpriseData = &EnterprisePayload{
 				Rqdata: data.RQData,
 			}
 		}

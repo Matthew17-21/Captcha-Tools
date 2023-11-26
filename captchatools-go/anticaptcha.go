@@ -189,20 +189,20 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 		ImgHost     string `json:"imghost,omitempty"`
 	}
 	type Task struct {
-		Type               captchaType       `json:"type"`
-		WebsiteURL         string            `json:"websiteURL"`
-		WebsiteKey         string            `json:"websiteKey"`
-		IsInvisible        bool              `json:"isInvisible,omitempty"`
-		MinScore           float32           `json:"minScore,omitempty"`
-		PageAction         string            `json:"pageAction,omitempty"`
-		Body               string            `json:"body,omitempty"`
-		ProxyType          string            `json:"proxyType,omitempty"`
-		ProxyAddress       string            `json:"proxyAddress,omitempty"`
-		ProxyPort          int               `json:"proxyPort,omitempty"`
-		ProxyLogin         string            `json:"proxyLogin,omitempty"`
-		ProxyPassword      string            `json:"proxyPassword,omitempty"`
-		UserAgent          string            `json:"userAgent,omitempty"`
-		HcapEnterpriseData EnterprisePayload `json:"enterprisePayload"`
+		Type               captchaType        `json:"type"`
+		WebsiteURL         string             `json:"websiteURL"`
+		WebsiteKey         string             `json:"websiteKey"`
+		IsInvisible        bool               `json:"isInvisible,omitempty"`
+		MinScore           float32            `json:"minScore,omitempty"`
+		PageAction         string             `json:"pageAction,omitempty"`
+		Body               string             `json:"body,omitempty"`
+		ProxyType          string             `json:"proxyType,omitempty"`
+		ProxyAddress       string             `json:"proxyAddress,omitempty"`
+		ProxyPort          int                `json:"proxyPort,omitempty"`
+		ProxyLogin         string             `json:"proxyLogin,omitempty"`
+		ProxyPassword      string             `json:"proxyPassword,omitempty"`
+		UserAgent          string             `json:"userAgent,omitempty"`
+		HcapEnterpriseData *EnterprisePayload `json:"enterprisePayload,omitempty"`
 	}
 	type Payload struct {
 		ClientKey string `json:"clientKey"`
@@ -286,7 +286,7 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 			}
 		}
 		if data.RQData != "" {
-			payload.Task.HcapEnterpriseData = EnterprisePayload{
+			payload.Task.HcapEnterpriseData = &EnterprisePayload{
 				Rqdata: data.RQData,
 			}
 		}

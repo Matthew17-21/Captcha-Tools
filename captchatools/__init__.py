@@ -46,7 +46,7 @@ class Harvester(ABC):
             raise captchaExceptions.WrongAPIKeyException()
         if self.solving_site is None:
             raise captchaExceptions.NoHarvesterException("No solving site selected")
-        if self.captcha_type not in ["v2", "v3", "hcaptcha", "hcap", "image", "normal"]:
+        if self.captcha_type not in ["v2", "v3", "hcaptcha", "hcap", "image", "normal", "hcaptchaturbo"]:
             raise captchaExceptions.NoCaptchaType("Invalid captcha type")
         if self.soft_id is None:
             if self.solving_site == 3 or self.solving_site == "2captcha":

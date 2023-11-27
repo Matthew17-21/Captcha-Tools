@@ -95,6 +95,7 @@ func main() {
 | Proxy| false | *Proxy |  Proxy to be used to solve captchas.<br />This will make the captcha be solved from the proxy ip|
 | ProxyType | false | string |  Type of the proxy being used. Options are:<br /> `HTTP`, `HTTPS`, `SOCKS4`, `SOCKS5`|
 | UserAgent | false | string |  UserAgent that will be passed to the service and used to solve the captcha |
+| RQData | false | string |  Custom data that is used in some implementations of hCaptcha. Most of the times, you want to set the  `IsInvisibleCaptcha` param to `true`.|
 ### Examples
 ##### Example - V2 Captcha / Basic usage
 ```go

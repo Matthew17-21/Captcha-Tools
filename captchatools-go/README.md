@@ -270,6 +270,7 @@ func addtional_data() {
 | Recaptcha V2 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Recaptcha V3 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Hcaptcha | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| HcaptchaTurbo |:x: | :x: | :x: | :white_check_mark: | :x: |
 | Image Captcha | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Cloudflare Turnstile | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: | :x: |
 | Funcaptcha |:x: | :x: | :x: | :x: | :x: |

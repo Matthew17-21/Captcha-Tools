@@ -25,7 +25,8 @@ class Harvester(ABC):
         self, b64_img: Optional[str]=None, 
         user_agent: Optional[str]=None, 
         proxy: Optional[str]=None, 
-        proxy_type: Optional[str]=None
+        proxy_type: Optional[str]=None,
+        rq_data: Optional[str]=None
     ): ... 
 
 def new_harvester(

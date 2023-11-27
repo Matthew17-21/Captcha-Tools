@@ -10,11 +10,12 @@ const (
 )
 
 const (
-	V2Captcha    captchaType = "v2"
-	V3Captcha    captchaType = "v3"
-	HCaptcha     captchaType = "hcaptcha"
-	ImageCaptcha captchaType = "image"
-	CFTurnstile  captchaType = "cfturnstile"
+	V2Captcha     captchaType = "v2"
+	V3Captcha     captchaType = "v3"
+	HCaptcha      captchaType = "hcaptcha"
+	HcaptchaTurbo captchaType = "hcaptchaturbo"
+	ImageCaptcha  captchaType = "image"
+	CFTurnstile   captchaType = "cfturnstile"
 )
 
 type (

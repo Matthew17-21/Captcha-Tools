@@ -76,6 +76,10 @@ class Capsolver(Harvester):
                 payload["task"]["type"] = "HCaptchaTask"
             payload["task"]["websiteURL"] = self.captcha_url
             payload["task"]["websiteKey"] = self.sitekey
+        elif self.captcha_type == "hcaptchaturbo":
+            payload["task"]["type"] = "HCaptchaTurboTask"
+            payload["task"]["websiteURL"] = self.captcha_url
+            payload["task"]["websiteKey"] = self.sitekey
 
 
         # Add Global Data

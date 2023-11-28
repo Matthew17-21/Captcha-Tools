@@ -23,13 +23,21 @@ class Capsolver(Harvester):
             except requests.RequestException:
                 pass
 
-    def get_token(self, b64_img: Optional[str] = None, user_agent: Optional[str] = None, proxy: Optional[str] = None, proxy_type: Optional[str] = "HTTP"):
+    def get_token(
+            self, 
+            b64_img: Optional[str] = None, 
+            user_agent: Optional[str] = None, 
+            proxy: Optional[str] = None, 
+            proxy_type: Optional[str] = "HTTP",
+            rq_data: Optional[str] = None
+        ):
         # Get ID
         task_id, already_solved = self.__get_id(
             b64_img=b64_img,
             user_agent=user_agent,
             proxy=proxy,
-            proxy_type=proxy_type
+            proxy_type=proxy_type,
+            rq_data=rq_data
         )
 
         # Check if token was already retrieved
@@ -68,6 +76,10 @@ class Capsolver(Harvester):
                 payload["task"]["type"] = "HCaptchaTask"
             payload["task"]["websiteURL"] = self.captcha_url
             payload["task"]["websiteKey"] = self.sitekey
+        elif self.captcha_type == "hcaptchaturbo":
+            payload["task"]["type"] = "HCaptchaTurboTask"
+            payload["task"]["websiteURL"] = self.captcha_url
+            payload["task"]["websiteKey"] = self.sitekey
 
 
         # Add Global Data
@@ -86,6 +98,8 @@ class Capsolver(Harvester):
             payload["task"]["proxyType"] = kwargs.get("proxy_type", "http")
         if kwargs.get("user_agent", None) is not None:
             payload["task"]["userAgent"] = kwargs.get("user_agent")
+        if kwargs.get("rq_data", None) is not None:
+            payload["task"]["enterprisePayload"] = {"rqdata":  kwargs.get("rq_data")}
         return payload
     
     def __get_id(self,**kwargs):

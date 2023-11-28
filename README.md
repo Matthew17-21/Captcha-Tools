@@ -32,7 +32,7 @@ captcha_answer = solver.get_token()
 | solving_site| true| String (name of site) or int (site ID) | "capmonster"| The captcha solving site that will be used. Refer to [the site IDs](https://github.com/Matthew17-21/Captcha-Tools/tree/main/captchatools-go#site-specific-support)|
 | sitekey| true | String | - | Sitekey from the site where captcha is loaded|
 | captcha_url | true| String | - | URL where the captcha is located|
-| captcha_type| false| String | "v2" | Type of captcha you are solving. Either captcha `image`, `v2`, `v3` or `hcaptcha` (`hcap` works aswell)|
+| captcha_type| false| String | "v2" | Type of captcha you are solving. Either captcha `image`, `v2`, `v3`,`hcaptcha` (`hcap` works aswell) or `hcaptchaturbo`|
 | invisible_captcha| false | bool | false | If the captcha is invisible or not.<br />__This param is only required when solving invisible captchas__|
 | min_score | false | double |0.7 | Minimum score for v3 captchas.<br />__This param is only required when solving V3 and it needs a higher / lower score__|
 | action | false | String | "verify" | Action that is associated with the V3 captcha.<br />__This param is only required when solving V3 captchas__|
@@ -44,6 +44,7 @@ captcha_answer = solver.get_token()
 | proxy| false | string |  Proxy to be used to solve captchas.<br />This will make the captcha be solved from the proxy ip<br /><br />Format: `ip:port:user:pass` |
 | proxy_type | false | string |  Type of the proxy being used. Options are:<br /> `HTTP`, `HTTPS`, `SOCKS4`, `SOCKS5`|
 | user_agent | false | string |  UserAgent that will be passed to the service and used to solve the captcha |
+| rq_data | false | string |  Custom data that is used in some implementations of hCaptcha. Most of the times, you want to set the  `invisible_captcha` param to `true`.|
 ### Examples
 ##### Example - V2 Captcha / Basic usage
 ```python
@@ -122,7 +123,7 @@ def main():
 | Capmonster      | captchatools.CapmonsterSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha | ImageToTextTask,<br/>NoCaptchaTask,<br/> NoCaptchaTaskProxyless,<br/> RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
 | Anticaptcha     | captchatools.AnticaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |    ImageToTextTask,<br/> RecaptchaV2Task<br/>  RecaptchaV2TaskProxyless,<br />RecaptchaV3TaskProxyless,<br />HCaptchaTaskProxyless |
 | 2Captcha        | captchatools.TwoCaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
-| Capsolver        | captchatools.CapsolverSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
+| Capsolver        | captchatools.CapsolverSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha<br />HcaptchaTurbo      |   - |
 | CaptchaAI        | captchatools.CaptchaAISite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
 
 

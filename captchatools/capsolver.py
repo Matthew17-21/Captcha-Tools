@@ -80,7 +80,12 @@ class Capsolver(Harvester):
             payload["task"]["type"] = "HCaptchaTurboTask"
             payload["task"]["websiteURL"] = self.captcha_url
             payload["task"]["websiteKey"] = self.sitekey
-
+        elif self.captcha_type == "fun" or self.captcha_type == "funcaptcha":
+            payload["task"]["type"] = "FunCaptchaTaskProxyless"
+            payload["task"]["websiteURL"] = self.captcha_url
+            payload["task"]["websiteKey"] = self.sitekey
+            if kwargs.get("proxy", None) is not None:
+                payload["task"]["type"] = "FunCaptchaTask"
 
         # Add Global Data
         if self.soft_id is not None:

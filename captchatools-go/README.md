@@ -339,5 +339,4 @@ func main() {
 - [ ] For configuration, use the option pattern
   - [ ] Add `WithMaxRetries` option when requesting captcha
 - [ ] Factory pattern for creating providers
-- [ ] Add `verbose` to config
-- [ ] Add a logger
+- [x] Add a logger

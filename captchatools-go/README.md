@@ -327,9 +327,17 @@ func main() {
 ```
 
 
-# TODOs
-- [ ] Add DeadByCaptcha
-- [ ] Nocaptchaai (maybe)
-- [ ] Context Support
-- [ ] FunCaptcha Support
-- [ ] Cookie Support
+# V2 TODOs
+
+* [ ] HTTP Tests
+* [ ] Improved Package Structure
+  * [ ] `proxy` package
+  * [ ] `errors` package
+    * [ ] Improve error handling by making errors more specific and package-level:
+  * [ ] package for each site
+* [ ] Update demonstration on how to use
+* [ ] For configuration, use the option pattern
+  * [ ] Add `WithMaxRetries` option when requesting captcha
+* [ ] Factory pattern for creating providers
+* [ ] Add `verbose` to config
+* [ ] Add a logger

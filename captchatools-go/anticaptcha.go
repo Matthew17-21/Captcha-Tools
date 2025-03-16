@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 // This file will contain the code to interact with anticaptcha.com API
@@ -71,11 +73,11 @@ func (a Anticaptcha) getID(data *AdditionalData) (int, error) {
 
 		// Parse the response
 		if response.ErrorID != 0 { // Means there was an error
-			return 0, errCodeToError(response.ErrorCode)
+			return 0, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return response.TaskID, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 // This method gets the captcha token from the Capmonster API
@@ -116,7 +118,7 @@ func (a Anticaptcha) getCaptchaAnswer(ctx context.Context, additional ...*Additi
 
 		// Check for any errors
 		if response.ErrorID > 0 { // means there was an error
-			return nil, errCodeToError(response.ErrorCode)
+			return nil, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 
 		// Check if the answer is ready or not
@@ -145,7 +147,7 @@ func (a Anticaptcha) getCaptchaAnswer(ctx context.Context, additional ...*Additi
 			ua,
 		), nil
 	}
-	return nil, ErrMaxAttempts
+	return nil, caperrors.ErrMaxAttempts
 }
 
 func (a Anticaptcha) getBalance() (float32, error) {
@@ -165,11 +167,11 @@ func (a Anticaptcha) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.ErrorID != 0 {
-			return 0, errCodeToError(response.ErrorCode)
+			return 0, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return response.Balance, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 /*
@@ -226,7 +228,7 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 	switch a.config.CaptchaType {
 	case ImageCaptcha:
 		if data == nil {
-			return "", ErrAddionalDataMissing
+			return "", caperrors.ErrAddionalDataMissing
 		}
 		payload.Task.Type = "ImageToTextTask"
 		payload.Task.Body = data.B64Img
@@ -269,7 +271,7 @@ func (a Anticaptcha) createPayload(data *AdditionalData) (string, error) {
 	case CFTurnstile:
 		payload.Task.Type = "TurnstileTaskProxyless"
 	default:
-		return "", ErrIncorrectCapType
+		return "", caperrors.ErrIncorrectCapType
 	}
 
 	// Check for any additional data about the task
@@ -303,7 +305,7 @@ func report_anticaptcha(was_correct bool, c *CaptchaAnswer) error {
 	case HCaptcha:
 		endpoint = "reportIncorrectHcaptcha"
 	default:
-		return ErrIncorrectCapType
+		return caperrors.ErrIncorrectCapType
 	}
 	if was_correct && (c.capType == V2Captcha || c.capType == V3Captcha) {
 		endpoint = "reportCorrectRecaptcha"
@@ -329,9 +331,9 @@ func report_anticaptcha(was_correct bool, c *CaptchaAnswer) error {
 
 		// Check for any errors
 		if response.ErrorID > 0 { // means there was an error
-			return errCodeToError(response.ErrorCode)
+			return caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return nil
 	}
-	return ErrMaxAttempts
+	return caperrors.ErrMaxAttempts
 }

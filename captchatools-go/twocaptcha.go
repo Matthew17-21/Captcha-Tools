@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 // This file will contain the code to interact with anticaptcha.com API
@@ -78,11 +80,11 @@ func (t Twocaptcha) getID(data *AdditionalData) (string, error) {
 
 		// Parse the response
 		if response.Status != 1 { // Means there was an error
-			return "", errCodeToError(response.Request)
+			return "", caperrors.ErrCodeToError(response.Request)
 		}
 		return response.Request, nil
 	}
-	return "", ErrMaxAttempts
+	return "", caperrors.ErrMaxAttempts
 }
 
 // This method gets the captcha token from the Capmonster API
@@ -123,7 +125,7 @@ func (t Twocaptcha) getCaptchaAnswer(ctx context.Context, additional ...*Additio
 
 		// Check for any errors
 		if response.Status == 0 && response.Request != "CAPCHA_NOT_READY" {
-			return nil, errCodeToError(response.Request)
+			return nil, caperrors.ErrCodeToError(response.Request)
 		}
 
 		// Check if captcha is ready
@@ -140,7 +142,7 @@ func (t Twocaptcha) getCaptchaAnswer(ctx context.Context, additional ...*Additio
 			"",
 		), nil
 	}
-	return nil, ErrMaxAttempts
+	return nil, caperrors.ErrMaxAttempts
 }
 
 func (t Twocaptcha) getBalance() (float32, error) {
@@ -160,7 +162,7 @@ func (t Twocaptcha) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.Status == 0 {
-			return 0, errCodeToError(response.Request)
+			return 0, caperrors.ErrCodeToError(response.Request)
 		}
 
 		// Convert to float32
@@ -172,7 +174,7 @@ func (t Twocaptcha) getBalance() (float32, error) {
 		balance = float32(value)
 		return balance, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 /*
@@ -197,7 +199,7 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 	switch t.config.CaptchaType {
 	case ImageCaptcha:
 		if data == nil {
-			return "", ErrAddionalDataMissing
+			return "", caperrors.ErrAddionalDataMissing
 		}
 		payload.Method = "base64"
 		payload.Body = data.B64Img
@@ -219,7 +221,7 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 		payload.Method = "turnstile"
 		payload.Sitekey = t.config.Sitekey
 	default:
-		return "", ErrIncorrectCapType
+		return "", caperrors.ErrIncorrectCapType
 	}
 
 	// Check for any additional data about the task
@@ -271,7 +273,7 @@ func report_2captcha(was_correct bool, c *CaptchaAnswer) error {
 
 		// Check for any errors
 		if response.Status == 0 {
-			return errCodeToError(response.Request)
+			return caperrors.ErrCodeToError(response.Request)
 		}
 		if response.Status == 1 && response.Request != "OK_REPORT_RECORDED" {
 			time.Sleep(3 * time.Second)
@@ -279,5 +281,5 @@ func report_2captcha(was_correct bool, c *CaptchaAnswer) error {
 		}
 		return nil
 	}
-	return ErrMaxAttempts
+	return caperrors.ErrMaxAttempts
 }

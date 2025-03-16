@@ -9,6 +9,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 type Capsolver struct {
@@ -45,11 +47,11 @@ func (c Capsolver) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, &response)
 		if response.ErrorID != 0 {
-			return 0, errCodeToError(response.ErrorCode)
+			return 0, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return response.Balance, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 func (c Capsolver) GetToken(additional ...*AdditionalData) (*CaptchaAnswer, error) {
@@ -86,11 +88,11 @@ func (c Capsolver) getID(data *AdditionalData) (string, error) {
 
 		// Parse the response
 		if response.ErrorID != 0 { // Means there was an error
-			return "", errCodeToError(response.ErrorCode)
+			return "", caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return response.TaskID, nil
 	}
-	return "", ErrMaxAttempts
+	return "", caperrors.ErrMaxAttempts
 }
 
 func (c Capsolver) getCaptchaAnswer(ctx context.Context, additional ...*AdditionalData) (*CaptchaAnswer, error) {
@@ -134,7 +136,7 @@ func (c Capsolver) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 
 		// Check for any errors
 		if response.ErrorID != 0 { // means there was an error
-			return nil, errCodeToError(response.ErrorCode)
+			return nil, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 
 		// Check if captcha is ready
@@ -163,7 +165,7 @@ func (c Capsolver) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 			ua,
 		), nil
 	}
-	return nil, ErrMaxAttempts
+	return nil, caperrors.ErrMaxAttempts
 }
 
 func (c Capsolver) createPayload(data *AdditionalData) (string, error) {

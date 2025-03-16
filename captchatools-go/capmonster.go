@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 /*
@@ -103,11 +105,11 @@ func (c Capmonster) getID(data *AdditionalData) (int, error) {
 
 		// Parse the response
 		if response.ErrorID != 0 { // Means there was an error
-			return 0, errCodeToError(response.ErrorCode)
+			return 0, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return response.TaskID, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 // This method gets the captcha token from the Capmonster API
@@ -148,7 +150,7 @@ func (c Capmonster) getCaptchaAnswer(ctx context.Context, additional ...*Additio
 
 		// Check for any errors
 		if response.ErrorID != 0 { // means there was an error
-			return nil, errCodeToError(response.ErrorCode)
+			return nil, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 
 		// Check if captcha is ready
@@ -177,7 +179,7 @@ func (c Capmonster) getCaptchaAnswer(ctx context.Context, additional ...*Additio
 			ua,
 		), nil
 	}
-	return nil, ErrMaxAttempts
+	return nil, caperrors.ErrMaxAttempts
 }
 
 // getBalance() returns the balance on the API key
@@ -198,11 +200,11 @@ func (c Capmonster) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.ErrorID != 0 {
-			return 0, errCodeToError(response.ErrorCode)
+			return 0, caperrors.ErrCodeToError(response.ErrorCode)
 		}
 		return response.Balance, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 /*
@@ -241,7 +243,7 @@ func (c Capmonster) createPayload(data *AdditionalData) (string, error) {
 	switch c.config.CaptchaType {
 	case ImageCaptcha:
 		if data == nil {
-			return "", ErrAddionalDataMissing
+			return "", caperrors.ErrAddionalDataMissing
 		}
 		payload.Task.Type = "ImageToTextTask"
 		payload.Task.Body = data.B64Img
@@ -279,7 +281,7 @@ func (c Capmonster) createPayload(data *AdditionalData) (string, error) {
 	case CFTurnstile:
 		payload.Task.Type = "TurnstileTaskProxyless"
 	default:
-		return "", ErrIncorrectCapType
+		return "", caperrors.ErrIncorrectCapType
 	}
 
 	// Check for addtional data

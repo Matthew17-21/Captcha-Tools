@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"strconv"
 	"time"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 type CaptchaAi struct {
@@ -56,11 +58,11 @@ func (t CaptchaAi) getID(data *AdditionalData) (string, error) {
 			// Have to read the error into an interface
 			temp := make(map[string]string)
 			json.Unmarshal(body, &temp)
-			return "", errCodeToError(temp["request"])
+			return "", caperrors.ErrCodeToError(temp["request"])
 		}
 		return strconv.Itoa(response.Request), nil
 	}
-	return "", ErrMaxAttempts
+	return "", caperrors.ErrMaxAttempts
 }
 
 // This method gets the captcha token from the Capmonster API
@@ -101,7 +103,7 @@ func (t CaptchaAi) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 
 		// Check for any errors
 		if response.Status == 0 && response.Request != "CAPCHA_NOT_READY" {
-			return nil, errCodeToError(response.Request)
+			return nil, caperrors.ErrCodeToError(response.Request)
 		}
 
 		// Check if captcha is ready
@@ -118,7 +120,7 @@ func (t CaptchaAi) getCaptchaAnswer(ctx context.Context, additional ...*Addition
 			"",
 		), nil
 	}
-	return nil, ErrMaxAttempts
+	return nil, caperrors.ErrMaxAttempts
 }
 
 func (t CaptchaAi) getBalance() (float32, error) {
@@ -138,7 +140,7 @@ func (t CaptchaAi) getBalance() (float32, error) {
 		resp.Body.Close()
 		json.Unmarshal(body, response)
 		if response.Status == 0 {
-			return 0, errCodeToError(response.Request)
+			return 0, caperrors.ErrCodeToError(response.Request)
 		}
 
 		// Convert to float32
@@ -150,7 +152,7 @@ func (t CaptchaAi) getBalance() (float32, error) {
 		balance = float32(value)
 		return balance, nil
 	}
-	return 0, ErrMaxAttempts
+	return 0, caperrors.ErrMaxAttempts
 }
 
 /*
@@ -199,9 +201,9 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 		query.Add("sitekey", t.Sitekey)
 
 	case CFTurnstile:
-		return "", ErrNotSupported
+		return "", caperrors.ErrNotSupported
 	default:
-		return "", ErrIncorrectCapType
+		return "", caperrors.ErrIncorrectCapType
 	}
 	if data != nil && t.CaptchaType != ImageCaptcha {
 		if data.UserAgent != "" {

@@ -1,4 +1,4 @@
-package captchatoolsgo
+package errors
 
 import (
 	"errors"
@@ -27,13 +27,12 @@ var (
 	ErrVisibleCaptcha      = errors.New("attempted solution of usual Recaptcha V2 as Recaptcha V2 invisible. Remove flag 'isInvisible' from the API payload")
 	ErrMissingValues       = errors.New("some of the required values for successive user emulation are missing")
 	ErrAddionalDataMissing = errors.New("additional data is missing. Refer to guide")
-	ErrProxyEmpty          = errors.New("proxy is blank")
 	ErrNotSupported        = errors.New("captcha type not supported")
 )
 
 // errCodeToError converts an error ID returned from the site and
 // returns the appropriate error
-func errCodeToError(id string) error {
+func ErrCodeToError(id string) error {
 	var err error = ErrUnknown
 	switch id {
 	case "ERROR_VISIBLE_RECAPTCHA":

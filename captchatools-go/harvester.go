@@ -3,6 +3,8 @@ package captchatoolsgo
 import (
 	"context"
 	"net/http"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 /*
@@ -63,7 +65,7 @@ func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 	switch config.CaptchaType {
 	case ImageCaptcha, V2Captcha, V3Captcha, HCaptcha, CFTurnstile:
 	default:
-		return nil, ErrIncorrectCapType
+		return nil, caperrors.ErrIncorrectCapType
 	}
 
 	// Get A Harvester
@@ -80,7 +82,7 @@ func NewHarvester(solving_site site, config *Config) (Harvester, error) {
 	case CaptchaAiSite:
 		h = &CaptchaAi{config}
 	default:
-		return nil, ErrNoHarvester
+		return nil, caperrors.ErrNoHarvester
 	}
 	return h, nil
 }

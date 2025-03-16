@@ -3,6 +3,8 @@ package captchatoolsgo
 import (
 	"fmt"
 	"strings"
+
+	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
 )
 
 type Proxy struct {
@@ -15,7 +17,7 @@ type Proxy struct {
 // NewProxy returns a proxy that can be used to solve captchas
 func NewProxy(proxy string) (*Proxy, error) {
 	if strings.TrimSpace(proxy) == "" {
-		return nil, ErrProxyEmpty
+		return nil, caperrors.ErrProxyEmpty
 	}
 
 	splitted := strings.Split(proxy, ":")

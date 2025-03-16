@@ -230,7 +230,7 @@ func (t Twocaptcha) createPayload(data *AdditionalData) (string, error) {
 			payload.UserAgent = data.UserAgent
 		}
 		if data.Proxy != nil {
-			payload.Proxy = data.Proxy.StringFormatted()
+			payload.Proxy = data.Proxy.ProxyUrl()
 		}
 		if data.ProxyType != "" {
 			payload.ProxyType = data.ProxyType

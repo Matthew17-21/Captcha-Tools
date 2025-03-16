@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	caperrors "github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
+	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/proxy"
 )
 
 /*
@@ -39,11 +40,11 @@ type Harvester interface {
 }
 
 type AdditionalData struct {
-	B64Img    string // base64 encoded image
-	Proxy     *Proxy // A proxy in correct formatting - such as user:pass@ip:port
-	ProxyType string // Type of your proxy: HTTP, HTTPS, SOCKS4, SOCKS5
-	UserAgent string // UserAgent that will be passed to the service and used to solve the captcha
-	RQData    string // Custom rqdata for hcaptcha
+	B64Img    string       // base64 encoded image
+	Proxy     *proxy.Proxy // A proxy in correct formatting - such as user:pass@ip:port
+	ProxyType string       // Type of your proxy: HTTP, HTTPS, SOCKS4, SOCKS5
+	UserAgent string       // UserAgent that will be passed to the service and used to solve the captcha
+	RQData    string       // Custom rqdata for hcaptcha
 }
 
 // Configurations for the captchas you are solving.

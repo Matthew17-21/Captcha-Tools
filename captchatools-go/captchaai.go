@@ -210,7 +210,7 @@ func (t CaptchaAi) createUrl(data *AdditionalData) (string, error) {
 			query.Add("userAgent", data.UserAgent)
 		}
 		if data.Proxy != nil {
-			query.Add("proxy", data.Proxy.StringFormatted())
+			query.Add("proxy", data.Proxy.ProxyUrl())
 		}
 		if data.ProxyType != "" {
 			query.Add("proxytype", data.ProxyType)

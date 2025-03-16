@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/proxy"
 	"github.com/joho/godotenv"
 )
 
@@ -168,7 +169,7 @@ func Test2CaptchaGetV2Additional(t *testing.T) {
 			Name:        "Working V2 Config with proxy",
 			Config:      &Config{Api_key: twocapKey, Sitekey: "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-", CaptchaURL: "https://www.google.com/recaptcha/api2/demo", CaptchaType: "v2"},
 			AdditionalData: &AdditionalData{
-				Proxy: &Proxy{},
+				Proxy: &proxy.Proxy{},
 			},
 			ExpectError: false,
 		},

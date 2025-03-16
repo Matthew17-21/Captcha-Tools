@@ -240,7 +240,7 @@ func (c Capsolver) createPayload(data *AdditionalData) (string, error) {
 			p.Task.UserAgent = data.UserAgent
 		}
 		if data.Proxy != nil {
-			p.Task.Proxy = data.Proxy.StringFormatted()
+			p.Task.Proxy = data.Proxy.ProxyUrl()
 		}
 		if data.RQData != "" {
 			p.Task.HcapEnterpriseData = &EnterprisePayload{

@@ -329,15 +329,15 @@ func main() {
 
 # V2 TODOs
 
-* [ ] HTTP Tests
-* [ ] Improved Package Structure
-  * [ ] `proxy` package
-  * [ ] `errors` package
-    * [ ] Improve error handling by making errors more specific and package-level:
-  * [ ] package for each site
-* [ ] Update demonstration on how to use
-* [ ] For configuration, use the option pattern
-  * [ ] Add `WithMaxRetries` option when requesting captcha
-* [ ] Factory pattern for creating providers
-* [ ] Add `verbose` to config
-* [ ] Add a logger
+- [ ] HTTP Tests
+- [ ] Improved Package Structure
+  * [x] `proxy` package
+  * [x] `errors` package
+    - [ ] Improve error handling by making errors more specific and package-level:
+  - [ ] package for each site
+- [ ] Update demonstration on how to use
+- [ ] For configuration, use the option pattern
+  - [ ] Add `WithMaxRetries` option when requesting captcha
+- [ ] Factory pattern for creating providers
+- [ ] Add `verbose` to config
+- [ ] Add a logger

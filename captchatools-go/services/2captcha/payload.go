@@ -5,6 +5,20 @@ import (
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/proxy"
 )
 
+var proxylessCapthaMap = map[harvester.CaptchaType]string{
+	harvester.ImageCaptcha: "ImageToTextTask",
+	harvester.V2Captcha:    "RecaptchaV2TaskProxyless",
+	harvester.V3Captcha:    "RecaptchaV3TaskProxyless",
+	harvester.CFTurnstile:  "TurnstileTaskProxyless",
+}
+
+var proxyCaptchaMap = map[harvester.CaptchaType]string{
+	harvester.ImageCaptcha: "ImageToTextTask",
+	harvester.CFTurnstile:  "TurnstileTask",
+	harvester.V3Captcha:    "RecaptchaV3TaskProxyless", // 2captha doesn't support with proxy
+	harvester.V2Captcha:    "RecaptchaV2Task",
+}
+
 // Payload for 2captcha requests
 type payload map[string]any
 
@@ -29,8 +43,7 @@ func newTaskPayload(t Twocaptcha) payload {
 	// Set method based on captcha type
 	switch t.CaptchaType {
 	case harvester.ImageCaptcha:
-		// TODO: Add captcha type
-		taskData.setToPayload("method", "base64")
+		taskData.setToPayload("type", "ImageToTextTask")
 	case harvester.V2Captcha:
 		taskData.setToPayload("type", "RecaptchaV2TaskProxyless")
 		taskData.setToPayload("method", "userrecaptcha")
@@ -39,21 +52,20 @@ func newTaskPayload(t Twocaptcha) payload {
 			taskData.setToPayload("invisible", 1)
 		}
 	case harvester.V3Captcha:
-		// TODO: Add captcha type
-		taskData.setToPayload("method", "userrecaptcha")
-		taskData.setToPayload("googlekey", t.Sitekey)
-		taskData.setToPayload("version", "v3")
-		taskData.setToPayload("action", t.Action)
-		taskData.setToPayload("min_score", t.MinScore)
+		taskData.setToPayload("type", "RecaptchaV3TaskProxyless")
+		taskData.setToPayload("websiteKey", t.Sitekey)
+		taskData.setToPayload("minScore", t.MinScore)
+		// TODO: Add pageAction if passed
 	case harvester.HCaptcha, harvester.HcaptchaTurbo:
 		// TODO: Add captcha type
 		taskData.setToPayload("method", "hcaptcha")
 		taskData.setToPayload("sitekey", t.Sitekey)
 	case harvester.CFTurnstile:
-		// TODO: Add captcha type
-		taskData.setToPayload("method", "turnstile")
-		taskData.setToPayload("sitekey", t.Sitekey)
+		taskData.setToPayload("type", "TurnstileTaskProxyless")
+		taskData.setToPayload("websiteURL", t.Sitekey)
 	}
+
+	// TODO: If using a proxy, set the proxy and change the type on taskdata
 
 	// Add page URL
 	taskData.setToPayload("websiteURL", t.CaptchaURL)

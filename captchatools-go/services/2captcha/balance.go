@@ -2,6 +2,7 @@ package twocaptcha
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,14 +10,15 @@ import (
 	"strconv"
 
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/errors"
+	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/internal/httputils"
 )
 
 // Attempt to get the balance from the API
 func (t Twocaptcha) GetBalance() (float32, error) {
-	return t.getBalance(baseURL)
+	return t.getBalance(context.Background(), baseURL)
 }
 
-func (t Twocaptcha) getBalance(baseUrl string) (float32, error) {
+func (t Twocaptcha) getBalance(ctx context.Context, baseUrl string) (float32, error) {
 	t.Logger.Info("Attempting to get balance for key %q...", t.Config.Api_key)
 
 	// Create payload
@@ -27,12 +29,14 @@ func (t Twocaptcha) getBalance(baseUrl string) (float32, error) {
 	}
 	t.Logger.Debug("Payload to get balance: %q", string(payload))
 
-	// Create & make request
-	resp, err := http.Post(
-		baseUrl+getBalanceEp,
-		"application/json",
-		bytes.NewBuffer(payload),
-	)
+	// Create request
+	req, err := newGetBalanceReq(baseUrl, t.Api_key)
+	if err != nil {
+		return 0, fmt.Errorf("newGetBalanceReq error: %w", err)
+	}
+
+	// Make request
+	resp, err := httputils.MakeRequest(ctx, t.Logger, req, 10) // TODO: Make this more dynamic
 	if err != nil {
 		return 0, fmt.Errorf("error making request: %w", err)
 	}

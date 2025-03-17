@@ -1,6 +1,7 @@
 package twocaptcha
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -51,7 +52,7 @@ func TestGetBalance_Success(t *testing.T) {
 	}
 
 	// Run the test
-	resultBalance, err := twocap.getBalance(server.URL)
+	resultBalance, err := twocap.getBalance(context.Background(), server.URL)
 	require.NoError(t, err, "GetBalance should not return an error")
 	assert.Equal(t, expectedBalance, resultBalance, "Balance doesn't match expected value")
 }
@@ -82,7 +83,7 @@ func TestGetBalance_Error(t *testing.T) {
 	}
 
 	// Override the base URL for testing
-	_, err := twocap.getBalance(server.URL)
+	_, err := twocap.getBalance(context.Background(), server.URL)
 	assert.Error(t, err)
 }
 

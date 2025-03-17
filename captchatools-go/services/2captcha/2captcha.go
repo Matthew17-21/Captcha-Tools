@@ -16,3 +16,7 @@ type Twocaptcha struct {
 	harvester.Config
 }
 
+// Attempt to get the balance from the API
+func (t Twocaptcha) GetBalance() (float32, error) {
+	return t.getBalance(context.Background(), baseURL)
+}

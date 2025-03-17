@@ -13,11 +13,6 @@ import (
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/internal/httputils"
 )
 
-// Attempt to get the balance from the API
-func (t Twocaptcha) GetBalance() (float32, error) {
-	return t.getBalance(context.Background(), baseURL)
-}
-
 func (t Twocaptcha) getBalance(ctx context.Context, baseUrl string) (float32, error) {
 	t.Logger.Info("Attempting to get balance for key %q...", t.Config.Api_key)
 

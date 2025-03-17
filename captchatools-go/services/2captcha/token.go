@@ -18,9 +18,9 @@ import (
 )
 
 const (
-	getTaskIDEp    string = "/getTaskID"
-	maxRetries     int    = 30
-	pollingTimeout        = 3 * time.Second
+	createTaskEp string = "/createTask"
+	getResultEp  string = "/getTaskResult"
+	maxRetries   int    = 30
 
 	defaultPollingTimeout       = 3 * time.Second
 	defaultErrorId        int64 = -1
@@ -58,7 +58,7 @@ func (t Twocaptcha) newGetTaskIDReq(ctx context.Context, baseUrl string, p paylo
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		baseUrl+getTaskIDEp,
+		baseUrl+createTaskEp,
 		bytes.NewBuffer(payloadBytes),
 	)
 	if err != nil {

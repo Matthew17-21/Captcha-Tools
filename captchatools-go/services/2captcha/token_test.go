@@ -22,7 +22,7 @@ func TestGetTaskID_Success(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify request method and path
 		assert.Equal(t, http.MethodPost, r.Method)
-		assert.Equal(t, getTaskIDEp, r.URL.Path)
+		assert.Equal(t, createTaskEp, r.URL.Path)
 
 		// Verify content type
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))

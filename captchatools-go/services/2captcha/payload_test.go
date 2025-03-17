@@ -766,3 +766,122 @@ func TestNewTaskPayloadEdgeCases(t *testing.T) {
 		})
 	}
 }
+
+func TestSetCustom(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		value    any
+		expected map[string]any
+	}{
+		{
+			name:  "String value",
+			key:   "customParam",
+			value: "customValue",
+			expected: map[string]any{
+				"customParam": "customValue",
+			},
+		},
+		{
+			name:  "Integer value",
+			key:   "customInt",
+			value: 42,
+			expected: map[string]any{
+				"customInt": 42,
+			},
+		},
+		{
+			name:  "Float value",
+			key:   "customFloat",
+			value: 3.14,
+			expected: map[string]any{
+				"customFloat": 3.14,
+			},
+		},
+		{
+			name:  "Boolean value",
+			key:   "customBool",
+			value: true,
+			expected: map[string]any{
+				"customBool": true,
+			},
+		},
+		{
+			name:  "Nil value",
+			key:   "customNil",
+			value: nil,
+			expected: map[string]any{
+				"customNil": nil,
+			},
+		},
+		{
+			name:  "Empty key",
+			key:   "",
+			value: "value",
+			expected: map[string]any{
+				"": "value",
+			},
+		},
+		{
+			name:  "Slice value",
+			key:   "customSlice",
+			value: []string{"a", "b", "c"},
+			expected: map[string]any{
+				"customSlice": []string{"a", "b", "c"},
+			},
+		},
+		{
+			name:  "Map value",
+			key:   "customMap",
+			value: map[string]int{"a": 1, "b": 2},
+			expected: map[string]any{
+				"customMap": map[string]int{"a": 1, "b": 2},
+			},
+		},
+		{
+			name:  "Overwrite existing key",
+			key:   "existingKey",
+			value: "newValue",
+			expected: map[string]any{
+				"existingKey": "newValue",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Create a new payload
+			p := newPayload()
+
+			// For the overwrite test, pre-populate the payload
+			if tt.name == "Overwrite existing key" {
+				p["existingKey"] = "oldValue"
+			}
+
+			// Call the method being tested
+			p.SetCustom(tt.key, tt.value)
+
+			// Check results
+			for expectedKey, expectedValue := range tt.expected {
+				// Verify key exists
+				actualValue, exists := p[expectedKey]
+				if !exists {
+					t.Errorf("SetCustom() did not set key %q in payload", expectedKey)
+					continue
+				}
+
+				// Verify value is correct
+				if !reflect.DeepEqual(actualValue, expectedValue) {
+					t.Errorf("SetCustom() set %q = %v, want %v", expectedKey, actualValue, expectedValue)
+				}
+			}
+
+			// For the overwrite test, verify the value changed
+			if tt.name == "Overwrite existing key" {
+				if p["existingKey"] == "oldValue" {
+					t.Errorf("SetCustom() did not overwrite existing value")
+				}
+			}
+		})
+	}
+}

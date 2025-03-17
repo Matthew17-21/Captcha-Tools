@@ -24,6 +24,15 @@ type ConfigurableSetter interface {
 	// SetRqData sets custom data for hCaptcha enterprise challenges,
 	// typically found as rqdata in network requests for invisible captchas
 	SetRqData(string)
+
+	// SetCustom allows setting arbitrary key-value pairs for the captcha task.
+	// This provides flexibility to support new or custom parameters not covered
+	// by the standard setters. The first parameter is the key name that will be
+	// used in the API request, and the second parameter is its value. When sent
+	// to the service, these will be formatted as "key":"value" in the request JSON.
+	// Use this method when you need to utilize service-specific features or
+	// parameters not explicitly defined in the interface.
+	SetCustom(string, any)
 }
 
 // TokenOption is a function that configures a ConfigurableSetter object.

@@ -140,6 +140,17 @@ func (p *payload) SetRqData(rq string) {
 	p.setToPayload("data", rq)
 }
 
+// SetCustom allows setting arbitrary key-value pairs for the captcha task.
+// This provides flexibility to support new or custom parameters not covered
+// by the standard setters. The first parameter is the key name that will be
+// used in the API request, and the second parameter is its value. When sent
+// to the service, these will be formatted as "key":"value" in the request JSON.
+// Use this method when you need to utilize service-specific features or
+// parameters not explicitly defined in the interface.
+func (p *payload) SetCustom(key string, value any) {
+	p.setToPayload(key, value)
+}
+
 func (p *payload) setToPayload(key string, value any) {
 	(*p)[key] = value
 }

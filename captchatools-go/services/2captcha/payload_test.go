@@ -1,8 +1,10 @@
 package twocaptcha
 
 import (
+	"reflect"
 	"testing"
 
+	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/harvester"
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/proxy"
 )
 
@@ -329,5 +331,438 @@ func TestMultipleOperations(t *testing.T) {
 	// Ensure no extra keys were added
 	if len(p) != len(expected) {
 		t.Errorf("MultipleOperations payload has %d entries, want %d", len(p), len(expected))
+	}
+}
+
+func TestNewTaskPayload(t *testing.T) {
+	tests := []struct {
+		name           string
+		config         harvester.Config
+		options        []harvester.TokenOption
+		expectedType   string
+		expectedFields map[string]any
+	}{
+		{
+			name: "V2 Captcha without proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "RecaptchaV2TaskProxyless",
+			expectedFields: map[string]any{
+				"websiteKey": "test_site_key",
+				"websiteURL": "https://example.com",
+			},
+		},
+		{
+			name: "V2 Captcha with proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{Ip: "192.168.1.1", Port: "8080"}),
+			},
+			expectedType: "RecaptchaV2Task",
+			expectedFields: map[string]any{
+				"websiteKey":   "test_site_key",
+				"websiteURL":   "https://example.com",
+				"proxyAddress": "192.168.1.1",
+				"proxyPort":    "8080",
+			},
+		},
+		{
+			name: "V2 Captcha with proxy and auth",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{
+					Ip:       "192.168.1.1",
+					Port:     "8080",
+					User:     "user",
+					Password: "pass",
+				}),
+			},
+			expectedType: "RecaptchaV2Task",
+			expectedFields: map[string]any{
+				"websiteKey":    "test_site_key",
+				"websiteURL":    "https://example.com",
+				"proxyAddress":  "192.168.1.1",
+				"proxyPort":     "8080",
+				"proxyLogin":    "user",
+				"proxyPassword": "pass",
+			},
+		},
+		{
+			name: "V3 Captcha without proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V3Captcha,
+				MinScore:    0.7,
+				Action:      "login",
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "RecaptchaV3TaskProxyless",
+			expectedFields: map[string]any{
+				"websiteKey": "test_site_key",
+				"websiteURL": "https://example.com",
+				"minScore":   float32(0.7),
+				"pageAction": "login",
+			},
+		},
+		{
+			name: "V3 Captcha with proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V3Captcha,
+				MinScore:    0.7,
+				Action:      "login",
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{Ip: "192.168.1.1", Port: "8080"}),
+				harvester.WithProxyType("HTTP"),
+			},
+			expectedType: "RecaptchaV3Task",
+			expectedFields: map[string]any{
+				"websiteKey":   "test_site_key",
+				"websiteURL":   "https://example.com",
+				"minScore":     float32(0.7),
+				"pageAction":   "login",
+				"proxyAddress": "192.168.1.1",
+				"proxyPort":    "8080",
+				"proxyType":    "HTTP",
+			},
+		},
+		{
+			name: "HCaptcha without proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.HCaptcha,
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "HCaptchaTaskProxyless",
+			expectedFields: map[string]any{
+				"sitekey":    "test_site_key",
+				"websiteURL": "https://example.com",
+			},
+		},
+		{
+			name: "HCaptcha with proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.HCaptcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{Ip: "192.168.1.1", Port: "8080"}),
+			},
+			expectedType: "HCaptchaTask",
+			expectedFields: map[string]any{
+				"sitekey":      "test_site_key",
+				"websiteURL":   "https://example.com",
+				"proxyAddress": "192.168.1.1",
+				"proxyPort":    "8080",
+			},
+		},
+		{
+			name: "Cloudflare Turnstile without proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.CFTurnstile,
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "TurnstileTaskProxyless",
+			expectedFields: map[string]any{
+				"websiteKey": "test_site_key",
+				"websiteURL": "https://example.com",
+			},
+		},
+		{
+			name: "Cloudflare Turnstile with proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.CFTurnstile,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{Ip: "192.168.1.1", Port: "8080"}),
+			},
+			expectedType: "TurnstileTask",
+			expectedFields: map[string]any{
+				"websiteKey":   "test_site_key",
+				"websiteURL":   "https://example.com",
+				"proxyAddress": "192.168.1.1",
+				"proxyPort":    "8080",
+			},
+		},
+		{
+			name: "Image Captcha without proxy",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.ImageCaptcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithB64Img("base64encodedimage"),
+			},
+			expectedType: "ImageToTextTask",
+			expectedFields: map[string]any{
+				"body":       "base64encodedimage",
+				"websiteURL": "https://example.com",
+			},
+		},
+		{
+			name: "V2 Invisible Captcha without proxy",
+			config: harvester.Config{
+				Api_key:            "test_api_key",
+				Sitekey:            "test_site_key",
+				CaptchaURL:         "https://example.com",
+				CaptchaType:        harvester.V2Captcha,
+				IsInvisibleCaptcha: true,
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "RecaptchaV2TaskProxyless",
+			expectedFields: map[string]any{
+				"websiteKey": "test_site_key",
+				"websiteURL": "https://example.com",
+				"invisible":  1,
+			},
+		},
+		{
+			name: "With multiple token options",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.HCaptcha,
+				SoftID:      12345,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{Ip: "192.168.1.1", Port: "8080"}),
+				harvester.WithUserAgent("Mozilla/5.0"),
+				harvester.WithRqData("custom_rqdata"),
+			},
+			expectedType: "HCaptchaTask",
+			expectedFields: map[string]any{
+				"sitekey":      "test_site_key",
+				"websiteURL":   "https://example.com",
+				"proxyAddress": "192.168.1.1",
+				"proxyPort":    "8080",
+				"userAgent":    "Mozilla/5.0",
+				"data":         "custom_rqdata",
+				"soft_id":      12345,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			twoCaptcha := Twocaptcha{Config: tt.config}
+
+			result := newTaskPayload(twoCaptcha, tt.options...)
+
+			// Check that the client key is set correctly
+			if clientKey, ok := result["clientKey"].(string); !ok || clientKey != tt.config.Api_key {
+				t.Errorf("newTaskPayload() clientKey = %v, want %v", clientKey, tt.config.Api_key)
+			}
+
+			// Get the task data from the result
+			taskData, ok := result["task"].(payload)
+			if !ok {
+				t.Fatalf("newTaskPayload() did not set 'task' field or it's not a payload type")
+			}
+
+			// Check the task type
+			taskType, ok := taskData["type"].(string)
+			if !ok || taskType != tt.expectedType {
+				t.Errorf("newTaskPayload() task type = %v, want %v", taskType, tt.expectedType)
+			}
+
+			// Check all the expected fields in the task data
+			for key, expectedValue := range tt.expectedFields {
+				actualValue, exists := taskData[key]
+				if !exists {
+					t.Errorf("newTaskPayload() task data missing key %v", key)
+					continue
+				}
+
+				if !reflect.DeepEqual(actualValue, expectedValue) {
+					t.Errorf("newTaskPayload() task data[%v] = %v, want %v", key, actualValue, expectedValue)
+				}
+			}
+		})
+	}
+}
+
+func TestNewTaskPayloadEdgeCases(t *testing.T) {
+	tests := []struct {
+		name           string
+		config         harvester.Config
+		options        []harvester.TokenOption
+		expectedType   string
+		expectedFields map[string]any
+		checkNegative  bool
+		negativeKeys   []string
+	}{
+		{
+			name: "Empty API key",
+			config: harvester.Config{
+				Api_key:     "",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "RecaptchaV2TaskProxyless",
+			expectedFields: map[string]any{
+				"websiteKey": "test_site_key",
+				"websiteURL": "https://example.com",
+			},
+		},
+		{
+			name: "Nil proxy in options",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(nil),
+			},
+			expectedType: "RecaptchaV2TaskProxyless", // Should still be proxyless since nil proxy shouldn't change type
+			expectedFields: map[string]any{
+				"websiteKey": "test_site_key",
+				"websiteURL": "https://example.com",
+			},
+			checkNegative: true,
+			negativeKeys:  []string{"proxyAddress", "proxyPort"}, // These shouldn't be set
+		},
+		{
+			name: "Empty proxy fields",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{Ip: "", Port: ""}),
+			},
+			expectedType: "RecaptchaV2Task", // Even with empty strings, it should switch to proxy version
+			expectedFields: map[string]any{
+				"websiteKey":   "test_site_key",
+				"websiteURL":   "https://example.com",
+				"proxyAddress": "",
+				"proxyPort":    "",
+			},
+		},
+		{
+			name: "Proxy with incomplete auth",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "test_site_key",
+				CaptchaURL:  "https://example.com",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options: []harvester.TokenOption{
+				harvester.WithProxy(&proxy.Proxy{
+					Ip:       "192.168.1.1",
+					Port:     "8080",
+					User:     "user",
+					Password: "", // Missing password
+				}),
+			},
+			expectedType: "RecaptchaV2Task",
+			expectedFields: map[string]any{
+				"websiteKey":   "test_site_key",
+				"websiteURL":   "https://example.com",
+				"proxyAddress": "192.168.1.1",
+				"proxyPort":    "8080",
+			},
+			checkNegative: true,
+			negativeKeys:  []string{"proxyLogin", "proxyPassword"}, // These shouldn't be set
+		},
+		{
+			name: "Empty sitekey and URL",
+			config: harvester.Config{
+				Api_key:     "test_api_key",
+				Sitekey:     "",
+				CaptchaURL:  "",
+				CaptchaType: harvester.V2Captcha,
+			},
+			options:      []harvester.TokenOption{},
+			expectedType: "RecaptchaV2TaskProxyless",
+			expectedFields: map[string]any{
+				"websiteKey": "",
+				"websiteURL": "",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			twoCaptcha := Twocaptcha{Config: tt.config}
+
+			result := newTaskPayload(twoCaptcha, tt.options...)
+
+			// Check that the client key is set correctly
+			if clientKey, ok := result["clientKey"].(string); !ok || clientKey != tt.config.Api_key {
+				t.Errorf("newTaskPayload() clientKey = %v, want %v", clientKey, tt.config.Api_key)
+			}
+
+			// Get the task data from the result
+			taskData, ok := result["task"].(payload)
+			if !ok {
+				t.Fatalf("newTaskPayload() did not set 'task' field or it's not a payload type")
+			}
+
+			// Check the task type
+			taskType, ok := taskData["type"].(string)
+			if !ok || taskType != tt.expectedType {
+				t.Errorf("newTaskPayload() task type = %v, want %v", taskType, tt.expectedType)
+			}
+
+			// Check all the expected fields in the task data
+			for key, expectedValue := range tt.expectedFields {
+				actualValue, exists := taskData[key]
+				if !exists {
+					t.Errorf("newTaskPayload() task data missing key %v", key)
+					continue
+				}
+
+				if !reflect.DeepEqual(actualValue, expectedValue) {
+					t.Errorf("newTaskPayload() task data[%v] = %v, want %v", key, actualValue, expectedValue)
+				}
+			}
+
+			// Check that certain keys don't exist if specified
+			if tt.checkNegative {
+				for _, key := range tt.negativeKeys {
+					if _, exists := taskData[key]; exists {
+						t.Errorf("newTaskPayload() task data should not have key %v but it does", key)
+					}
+				}
+			}
+		})
 	}
 }

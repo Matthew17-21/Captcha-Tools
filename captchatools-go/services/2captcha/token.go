@@ -107,11 +107,6 @@ func (t Twocaptcha) getToken(ctx context.Context, baseUrl string, timeout time.D
 	// Create default payload
 	payload := newTaskPayload(t)
 
-	// Apply user options
-	for _, opt := range opts {
-		opt(&payload)
-	}
-
 	// Get task ID
 	taskID, err := t.getTaskID(ctx, baseUrl, payload)
 	if err != nil {

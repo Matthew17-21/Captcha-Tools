@@ -102,6 +102,26 @@ type taskResponse struct {
 	ErrorDescription string                 `json:"errorDescription,omitempty"`
 }
 
+// getToken is the internal implementation that handles the API communication
+func (t Twocaptcha) getToken(ctx context.Context, baseUrl string, timeout time.Duration, opts ...harvester.TokenOption) (harvester.CaptchaAnswer, error) {
+	// Create default payload
+	payload := newTaskPayload(t)
+
+	// Apply user options
+	for _, opt := range opts {
+		opt(&payload)
+	}
+
+	// Get task ID
+	taskID, err := t.getTaskID(ctx, baseUrl, payload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create task: %w", err)
+	}
+
+	// Get task result
+	return t.getTaskResult(ctx, baseUrl, taskID, timeout)
+}
+
 // getTaskResult polls 2Captcha for the result of a captcha solving task
 func (t Twocaptcha) getTaskResult(ctx context.Context, baseUrl string, taskID int64, pollingTimeout time.Duration) (harvester.CaptchaAnswer, error) {
 	t.Logger.Info("Getting result for task %d...", taskID)

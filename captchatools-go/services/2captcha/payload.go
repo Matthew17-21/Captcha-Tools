@@ -1,6 +1,7 @@
 package twocaptcha
 
 import (
+	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/harvester"
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/proxy"
 )
 
@@ -15,6 +16,55 @@ func newPayload() payload {
 func newPayloadWithClientKey(clientKey string) payload {
 	p := newPayload()
 	p.setToPayload("clientKey", clientKey)
+	return p
+}
+
+func newTaskPayload(t Twocaptcha) payload {
+	// Create base payload with API key
+	p := newPayloadWithClientKey(t.Api_key)
+
+	// Add common task data based on captcha type
+	taskData := newPayload()
+
+	// Set method based on captcha type
+	switch t.CaptchaType {
+	case harvester.ImageCaptcha:
+		// TODO: Add captcha type
+		taskData.setToPayload("method", "base64")
+	case harvester.V2Captcha:
+		taskData.setToPayload("type", "RecaptchaV2TaskProxyless")
+		taskData.setToPayload("method", "userrecaptcha")
+		taskData.setToPayload("websiteKey", t.Sitekey)
+		if t.IsInvisibleCaptcha {
+			taskData.setToPayload("invisible", 1)
+		}
+	case harvester.V3Captcha:
+		// TODO: Add captcha type
+		taskData.setToPayload("method", "userrecaptcha")
+		taskData.setToPayload("googlekey", t.Sitekey)
+		taskData.setToPayload("version", "v3")
+		taskData.setToPayload("action", t.Action)
+		taskData.setToPayload("min_score", t.MinScore)
+	case harvester.HCaptcha, harvester.HcaptchaTurbo:
+		// TODO: Add captcha type
+		taskData.setToPayload("method", "hcaptcha")
+		taskData.setToPayload("sitekey", t.Sitekey)
+	case harvester.CFTurnstile:
+		// TODO: Add captcha type
+		taskData.setToPayload("method", "turnstile")
+		taskData.setToPayload("sitekey", t.Sitekey)
+	}
+
+	// Add page URL
+	taskData.setToPayload("websiteURL", t.CaptchaURL)
+
+	// Add SoftID, if specified
+	if t.SoftID != 0 {
+		taskData.setToPayload("soft_id", t.SoftID)
+	}
+
+	// Merge task data into main payload
+	p.setToPayload("task", taskData)
 	return p
 }
 

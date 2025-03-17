@@ -12,6 +12,12 @@ func newPayload() payload {
 	return make(payload)
 }
 
+func newPayloadWithClientKey(clientKey string) payload {
+	p := newPayload()
+	p.setToPayload("clientKey", clientKey)
+	return p
+}
+
 // SetB64Img sets a base64-encoded image for image captcha solving
 func (p *payload) SetB64Img(img string) {
 	p.setToPayload("body", img)

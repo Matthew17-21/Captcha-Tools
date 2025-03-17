@@ -2,6 +2,7 @@ package twocaptcha
 
 import (
 	"context"
+	"time"
 
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/harvester"
 )
@@ -29,7 +30,14 @@ func (t Twocaptcha) GetTokenWithContext(ctx context.Context, opts ...harvester.T
 	return t.getToken(ctx, baseURL, defaultPollingTimeout, opts...)
 }
 
-// Attempt to get the balance from the API
+// GetBalance returns the current account balance
 func (t Twocaptcha) GetBalance() (float32, error) {
-	return t.getBalance(context.Background(), baseURL)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	return t.getBalance(ctx, baseURL)
+}
+
+// GetBalanceWithContext returns the account balance with a custom context
+func (t Twocaptcha) GetBalanceWithContext(ctx context.Context) (float32, error) {
+	return t.getBalance(ctx, baseURL)
 }

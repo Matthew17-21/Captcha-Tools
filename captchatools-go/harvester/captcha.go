@@ -1,5 +1,34 @@
 package harvester
 
+// CaptchaType represents the type of CAPTCHA being solved.
+// It is used to specify which solving method should be employed.
+type CaptchaType string
+
+const (
+	// V2Captcha represents Google reCAPTCHA v2 challenges that require
+	// clicking the "I'm not a robot" checkbox or solving image puzzles.
+	V2Captcha CaptchaType = "v2"
+
+	// V3Captcha represents Google reCAPTCHA v3 challenges that run
+	// in the background and assign a score based on user behavior.
+	V3Captcha CaptchaType = "v3"
+
+	// HCaptcha represents standard hCaptcha challenges similar to reCAPTCHA v2.
+	HCaptcha CaptchaType = "hcaptcha"
+
+	// HcaptchaTurbo represents the accelerated/premium version of hCaptcha
+	// that typically offers faster solving times.
+	HcaptchaTurbo CaptchaType = "hcaptchaturbo"
+
+	// ImageCaptcha represents traditional image-based captchas where text or
+	// numbers must be recognized and entered.
+	ImageCaptcha CaptchaType = "image"
+
+	// CFTurnstile represents Cloudflare Turnstile captcha challenges,
+	// Cloudflare's alternative to reCAPTCHA.
+	CFTurnstile CaptchaType = "cfturnstile"
+)
+
 // CaptchaAnswer represents the result of a successfully solved captcha challenge.
 // It provides methods to access the solution token, metadata about how the
 // captcha was solved, and the ability to report the solution's correctness

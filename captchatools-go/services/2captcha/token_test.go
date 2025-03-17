@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/harvester"
 	"github.com/stretchr/testify/assert"
@@ -232,4 +233,164 @@ func TestGetTaskID_WithProxy(t *testing.T) {
 	// Verify results
 	require.NoError(t, err)
 	assert.Equal(t, expectedTaskID, taskID)
+}
+
+func TestGetTaskResult_Success(t *testing.T) {
+	const expectedTaskID int64 = 12345678
+	const expectedAPIKey = "test-api-key"
+	const expectedToken = "captcha-solution-token-123456"
+
+	// Create a mock server for getTaskResult endpoint
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method and path
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, getResultEp, r.URL.Path)
+
+		// Verify content type
+		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
+
+		// Read and verify request body
+		body, err := io.ReadAll(r.Body)
+		require.NoError(t, err)
+		var payload map[string]interface{}
+		err = json.Unmarshal(body, &payload)
+		require.NoError(t, err)
+
+		// Verify payload contains expected values
+		assert.Equal(t, expectedAPIKey, payload["clientKey"])
+		assert.Equal(t, float64(expectedTaskID), payload["taskId"]) // JSON unmarshals numbers as float64
+
+		// Send success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		// Create response with solution
+		responseBody := &taskResponse{
+			ErrorID: 0,
+			Status:  "ready",
+			Solution: map[string]interface{}{
+				"gRecaptchaResponse": expectedToken,
+			},
+		}
+
+		err = json.NewEncoder(w).Encode(responseBody)
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	// Create Twocaptcha client
+	twocap := Twocaptcha{
+		Config: harvester.Config{
+			Api_key: expectedAPIKey,
+			Logger:  &mockLogger{},
+		},
+	}
+
+	// Call getTaskResult method
+	result, err := twocap.getTaskResult(context.Background(), server.URL, expectedTaskID, defaultPollingTimeout)
+
+	// Verify results
+	require.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.Equal(t, expectedToken, result.Token())
+	assert.Equal(t, expectedTaskID, result.ID())
+}
+
+func TestGetTaskResult_NotReady(t *testing.T) {
+	const expectedTaskID int64 = 12345678
+	const expectedAPIKey = "test-api-key"
+	const expectedToken = "captcha-solution-token-123456"
+
+	// Count API calls
+	callCount := 0
+
+	// Create a mock server for getTaskResult endpoint
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method and path
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, getResultEp, r.URL.Path)
+
+		// Increment call count
+		callCount++
+
+		// Send different responses based on call count
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		var responseBody interface{}
+
+		if callCount < 3 {
+			// First two calls return not ready
+			responseBody = &taskResponse{
+				ErrorID:   0,
+				Status:    "processing",
+				ErrorCode: "TASK_NOT_READY",
+			}
+		} else {
+			// Third call returns the solution
+			responseBody = &taskResponse{
+				ErrorID: 0,
+				Status:  "ready",
+				Solution: map[string]interface{}{
+					"gRecaptchaResponse": expectedToken,
+				},
+			}
+		}
+
+		err := json.NewEncoder(w).Encode(responseBody)
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	// Create Twocaptcha client
+	twocap := Twocaptcha{
+		Config: harvester.Config{
+			Api_key: expectedAPIKey,
+			Logger:  &mockLogger{},
+		},
+	}
+
+	// Call getTaskResult method
+	result, err := twocap.getTaskResult(context.Background(), server.URL, expectedTaskID, 10*time.Millisecond)
+
+	// Verify results
+	require.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.Equal(t, expectedToken, result.Token())
+	assert.Equal(t, expectedTaskID, result.ID())
+	assert.Equal(t, 3, callCount, "Should have made 3 API calls")
+}
+
+func TestGetTaskResult_Error(t *testing.T) {
+	const expectedTaskID int64 = 12345678
+	const expectedAPIKey = "test-api-key"
+	const expectedErrorCode = "ERROR_CAPTCHA_UNSOLVABLE"
+
+	// Create a mock server that returns an error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Return an error response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		responseBody := &taskResponse{
+			ErrorID:   1,
+			ErrorCode: expectedErrorCode,
+		}
+		json.NewEncoder(w).Encode(responseBody)
+	}))
+	defer server.Close()
+
+	// Create Twocaptcha client
+	twocap := Twocaptcha{
+		Config: harvester.Config{
+			Api_key: expectedAPIKey,
+			Logger:  &mockLogger{},
+		},
+	}
+
+	// Call getTaskResult method
+	_, err := twocap.getTaskResult(context.Background(), server.URL, expectedTaskID, defaultPollingTimeout)
+
+	// Verify error
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "captcha is unsolvable")
 }

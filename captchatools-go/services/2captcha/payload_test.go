@@ -26,7 +26,7 @@ func TestSetB64Img(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.SetB64Img(tt.img)
 
 			if p["body"] != tt.expected {
@@ -77,7 +77,7 @@ func TestSetProxy(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.SetProxy(tt.proxy)
 
 			for key, value := range tt.expected {
@@ -130,7 +130,7 @@ func TestSetProxyType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.SetProxyType(tt.proxyType)
 
 			if p["proxyType"] != tt.expected {
@@ -160,7 +160,7 @@ func TestSetUserAgent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.SetUserAgent(tt.userAgent)
 
 			if p["userAgent"] != tt.expected {
@@ -190,7 +190,7 @@ func TestSetRqData(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.SetRqData(tt.rqData)
 
 			if p["data"] != tt.expected {
@@ -235,7 +235,7 @@ func TestSetToPayload(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.setToPayload(tt.key, tt.value)
 
 			if p[tt.key] != tt.expected {
@@ -285,7 +285,7 @@ func TestProxyIsUserAuth(t *testing.T) {
 	// based on common proxy authentication patterns
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := make(payload)
+			p := newPayload()
 			p.SetProxy(tt.proxy)
 
 			// Check if the proxy credentials were added to the payload
@@ -304,7 +304,7 @@ func TestProxyIsUserAuth(t *testing.T) {
 
 func TestMultipleOperations(t *testing.T) {
 	// Test multiple operations on the same payload
-	p := make(payload)
+	p := newPayload()
 
 	// Set various properties
 	p.SetB64Img("testImage")

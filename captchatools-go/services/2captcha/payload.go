@@ -7,6 +7,11 @@ import (
 // Payload for 2captcha requests
 type payload map[string]any
 
+// newPayload creates and returns a new payload
+func newPayload() payload {
+	return make(payload)
+}
+
 // SetB64Img sets a base64-encoded image for image captcha solving
 func (p *payload) SetB64Img(img string) {
 	p.setToPayload("body", img)

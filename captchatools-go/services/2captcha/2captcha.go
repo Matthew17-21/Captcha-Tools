@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	baseURL      string = "https://api.2captcha.com"
-	getBalanceEp string = "/getBalance"
+	baseURL string = "https://api.2captcha.com"
 )
 
 type Twocaptcha struct {

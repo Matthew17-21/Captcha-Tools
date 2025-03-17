@@ -13,6 +13,10 @@ import (
 	"github.com/Matthew17-21/Captcha-Tools/captchatools-go/internal/httputils"
 )
 
+const (
+	getBalanceEp = "/getBalance"
+)
+
 func (t Twocaptcha) getBalance(ctx context.Context, baseUrl string) (float32, error) {
 	t.Logger.Info("Attempting to get balance for key %q...", t.Config.Api_key)
 
@@ -37,7 +41,7 @@ func (t Twocaptcha) getBalance(ctx context.Context, baseUrl string) (float32, er
 	}
 
 	// Parse response
-	return parseGetBalance(resp)
+	return parseBalanceResponse(resp)
 }
 
 // newGetBalanceReq creates a new HTTP request to get the account balance
@@ -65,7 +69,8 @@ func newGetBalanceReq(baseUrl, apiKey string) (*http.Request, error) {
 	return req, nil
 }
 
-func parseGetBalance(r *http.Response) (float32, error) {
+// parseBalanceResponse processes the API response for a balance request
+func parseBalanceResponse(r *http.Response) (float32, error) {
 	defer r.Body.Close()
 
 	// Read the body

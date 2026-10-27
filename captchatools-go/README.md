@@ -263,6 +263,7 @@ func addtional_data() {
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 - **[Capsolver](https://capsolver.com/)**
 - **[CaptchaAI](https://captchaai.com/)**
+- **[Solvecha](https://solvecha.com/docs)** (image captchas only; `SolvechaSite`; token captchas return `ErrNotSupported`)
 
 ### Site-Specific Support:
 | Captcha Type            |2Captcha    | Anticaptcha | Capmonster| Capsolver | CaptchaAI|

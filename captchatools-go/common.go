@@ -7,6 +7,7 @@ const (
 	TwoCaptchaSite              // The int 3 will represent 2captcha
 	CapsolverSite
 	CaptchaAiSite
+	SolvechaSite
 )
 
 const (

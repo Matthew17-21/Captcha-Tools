@@ -17,6 +17,7 @@ Sites:
 3 = 2captcha
 4 = Capsolver
 5 = CaptchaAI
+6 = Solvecha (image captchas only)
 '''
 __version__ = "1.4.1"
 __author__ = "Matthew17-21"
@@ -77,6 +78,7 @@ def new_harvester(**kwargs) -> Harvester:
     from .capmonster import Capmonster
     from .capsolver import Capsolver
     from .captchaai import CaptchaAI
+    from .solvecha import Solvecha
     
     site = kwargs.get("solving_site","")
     if isinstance(site, str):
@@ -91,6 +93,8 @@ def new_harvester(**kwargs) -> Harvester:
         return Capsolver(**kwargs)
     elif site == 5 or site == "captchaai":
         return CaptchaAI(**kwargs)
+    elif site == 6 or site == "solvecha":
+        return Solvecha(**kwargs)
     raise captchaExceptions.NoHarvesterException("No solving site selected")
 
 

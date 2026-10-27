@@ -116,6 +116,7 @@ def main():
 - **[Anticaptcha](https://www.anti-captcha.com/)**
 - **[Capsolver](https://www.capsolver.com/)**
 - **[CaptchaAI](https://captchaai.com/)**
+- **[Solvecha](https://solvecha.com/docs)** (image captchas only)
 
 ### Site-Specific Support:
 | Site            | Site ID |Captcha Types  Supported    |  Task Types Supported|
@@ -125,6 +126,7 @@ def main():
 | 2Captcha        | captchatools.TwoCaptchaSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
 | Capsolver        | captchatools.CapsolverSite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha<br />HcaptchaTurbo      |   - |
 | CaptchaAI        | captchatools.CaptchaAISite| Image captchas,<br/> Recaptcha V2,<br />Recaptcha V3,<br />HCaptcha      |   - |
+| Solvecha        | captchatoolsgo.SolvechaSite (Go) / `"solvecha"` or `6` (Python)| Image captchas only. Token captchas return an unsupported error. | ImageToTextTask |
 
 
 
